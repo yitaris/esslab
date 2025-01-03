@@ -13,6 +13,10 @@ export default {
           DEFAULT: '#fff',
           dark: '#121212',
         },
+        red:{
+          DEFAULT: '#b32017',
+          dark: '#b32017',
+        }
       }
     },
   },

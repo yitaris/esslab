@@ -1,33 +1,28 @@
 import React from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react"; // Clerk'in oturum yönetimi için
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./page/Login";
 import Inventory from "./page/Inventory";
+import Register from "./page/Register";
 
-const ProtectedRoute = ({ children }) => {
-    const { isSignedIn } = useAuth(); // Kullanıcı oturum durumu
-    return isSignedIn ? children : <Navigate to="/" />;
-};
 
 const App = () => {
     return (
-        <BrowserRouter>
+        <Router>
             <Routes>
                 <Route
-                    path="/"
-                    element={<Login />}
+                    path="/" 
+                    element={<Login />} 
+                />
+                <Route 
+                    path="/register"
+                    element={<Register />} 
                 />
                 <Route
                     path="/inventory"
-                    element={
-                        <ProtectedRoute>
-                            <Inventory />
-                        </ProtectedRoute>
-                    }
+                    element={<Inventory />}
                 />
             </Routes>
-        </BrowserRouter>
+        </Router>
     );
 };
 

@@ -11,6 +11,7 @@ import { FaBottleDroplet } from "react-icons/fa6";
 import { PiHamburgerFill } from "react-icons/pi";
 import { LuCakeSlice, LuPanelsLeftBottom } from "react-icons/lu";
 import { RiRedPacketFill  } from "react-icons/ri";
+import { IoMdAdd } from "react-icons/io";
 
 //page//
 import Fetchpanel from "../fetch/Fetchpanel";
@@ -20,10 +21,11 @@ import Fetchsurup from "../fetch/Fetchsurup";
 import FetchSut from "../fetch/Fetchsut";
 import Fetchsandivic from "../fetch/Fetchsandivic";
 import Fetchpasta from "../fetch/Fetchpasta";
+import Fetchadd from "../fetch/Fetchadd";
 
 const Inventory = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("panel");
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -57,15 +59,16 @@ const Inventory = () => {
               { icon: <GiMilkCarton size={25} />, text: "Sütler", category: "sutler" },
               { icon: <PiHamburgerFill size={25} />, text: "Sandviç", category: "sandvic" },
               { icon: <LuCakeSlice size={25} />, text: "Pastalar", category: "pastalar" },
+              { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
             ].map((item, index) => (
 
               <button
                 key={index}
-                className="flex items-center justify-start w-full text-white px-4 py-2 hover:bg-red-600 rounded-lg transition-all duration-300"
+                className={`${index === 7 ? 'absolute bottom-5 ' : ''} grid grid-cols-[42px,1fr] items-center w-full text-white px-4 py-2  rounded-lg transition-all duration-300`}
                 onClick={() => handleCategoryClick(item.category)}
               >
                 <div
-                  className="transition-transform duration-300 transform group-hover:translate-x-0"
+                  className="hover:bg-red-600 rounded-xl p-2 transition-all duration-300 transform hover:scale-105"
                   style={{ transitionTimingFunction: "ease-in-out" }}
                 >
                   {item.icon}
@@ -91,6 +94,7 @@ const Inventory = () => {
           {selectedCategory === "sutler" && <FetchSut />}
           {selectedCategory === "sandvic" && <Fetchsandivic />}
           {selectedCategory === "pastalar" && <Fetchpasta />}
+          {selectedCategory === "ekle" && <Fetchadd />}
         </div>
       </div>
     </div>

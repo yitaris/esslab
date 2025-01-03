@@ -11,6 +11,7 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const { signIn } = useSignIn();
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
@@ -20,14 +21,14 @@ const Login = () => {
         e.preventDefault();
         const username = e.target.username.value;
         const password = e.target.password.value;
-
+    
         setIsLoading(true);
         setErrorMessage("");
-
+    
         try {
             const result = await signIn.attemptFirstFactor({ identifier: username, password });
             if (result.status === "complete") {
-                navigate("/inventory"); // Başarılı girişte yönlendir
+                setIsLoggedIn(true); // Kullanıcı giriş yaptı
             } else {
                 throw new Error("Oturum açma tamamlanamadı.");
             }
@@ -38,6 +39,12 @@ const Login = () => {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+    if (isLoggedIn) {
+        navigate("/inventory"); // Kullanıcı giriş yaptıysa yönlendir
+    }
+}, [isLoggedIn, navigate]);
 
     return (
         <div className="h-screen flex items-center justify-center bg-white relative overflow-hidden">

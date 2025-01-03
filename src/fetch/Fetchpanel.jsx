@@ -1,12 +1,7 @@
 import React from 'react'
 
-const Fetchpanel = () => {
-
+export default function Fetchpanel() {
   return (
-    <div>
-      fetchpanel
-    </div>
-  );
-};
-
-export default Fetchpanel;
+    <div>fetchpanel</div>
+  )
+}

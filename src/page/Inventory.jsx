@@ -13,10 +13,10 @@ import { LuCakeSlice, LuPanelsLeftBottom } from "react-icons/lu";
 import { RiRedPacketFill  } from "react-icons/ri";
 
 //page//
-import Fetchpanel from "../fetch/fetchpanel";
-import Fetchpaket from "../fetch/fetchpaket";
-import Fetchbardak from "../fetch/fetchbardak";
-import Fetchsurup from "../fetch/fetchsurup";
+import Fetchpanel from "../fetch/Fetchpanel";
+import Fetchpaket from "../fetch/Fetchpaket";
+import Fetchbardak from "../fetch/Fetchbardak";
+import Fetchsurup from "../fetch/Fetchsurup";
 import FetchSut from "../fetch/Fetchsut";
 import Fetchsandivic from "../fetch/Fetchsandivic";
 import Fetchpasta from "../fetch/Fetchpasta";

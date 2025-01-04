@@ -38,7 +38,7 @@ export default function Fetchpanel() {
     );
 
   return (
-    <div className="h-full px-10">
+    <div className="w-full h-full px-10">
       <div className="bg-gray-50 rounded-2xl shadow-lg p-4 h-full">
         {/* Search Bar */}
         <div className="mb-4 mt-4 grid place-content-center">

@@ -37,7 +37,7 @@ const Inventory = () => {
   };
 
   return (
-    <div className="w-full h-screen relative bg-[#ffffff] text-black grid grid-rows-[100px,auto]">
+    <div className="w-full h-full relative bg-[#ffffff] text-black grid grid-rows-[100px,auto]">
       {/* Header */}
       <div className="grid grid-cols-2 items-center px-10 border">
         <img src={esslablogodark} className="w-[180px]" />
@@ -64,7 +64,7 @@ const Inventory = () => {
 
               <button
                 key={index}
-                className={`${index === 7 ? 'absolute bottom-5 ' : ''} grid grid-cols-[42px,1fr] items-center w-full text-white px-4 py-2  rounded-lg transition-all duration-300`}
+                className={`grid grid-cols-[42px,1fr] items-center w-full text-white px-4 py-2  rounded-lg transition-all duration-300`}
                 onClick={() => handleCategoryClick(item.category)}
               >
                 <div

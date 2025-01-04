@@ -52,7 +52,7 @@ export default function Fetchadd() {
             <button
               type="button"
               onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="bg-white w-[200px] px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-full text-left"
+              className="bg-white px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-[200px] text-left"
             >
               {newItem.category || "Kategori Seçin"}
               <span className="float-right">▼</span>

@@ -9,10 +9,18 @@ export default function Fetchadd() {
     productname: "",
     productcount: "",
   });
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const categories = ["paket", "bardak", "surup", "sut", "sandivic", "pasta"];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewItem((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCategorySelect = (category) => {
+    setNewItem((prev) => ({ ...prev, category }));
+    setIsDropdownOpen(false); // Menü kapatılır
   };
 
   const handleAddItem = async () => {
@@ -38,23 +46,40 @@ export default function Fetchadd() {
   return (
     <div className="h-full px-10">
       <div className="bg-gray-50 rounded-2xl shadow-lg p-4 h-full">
-        <h1 className="text-2xl font-bold mb-4">Yeni Envanter Ekle</h1>
+        <h1 className="text-2xl font-semibold mb-4">Yeni Ürün Ekle</h1>
         <div className="grid gap-4 mb-6">
-          <input
-            type="text"
-            name="category"
-            value={newItem.category}
-            onChange={handleInputChange}
-            placeholder="Kategori"
-            className="bg-white px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsDropdownOpen((prev) => !prev)}
+              className="bg-white w-[200px] px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-full text-left"
+            >
+              {newItem.category || "Kategori Seçin"}
+              <span className="float-right">▼</span>
+            </button>
+            <div
+              className={`absolute z-10 bg-white border rounded-xl shadow-md mt-2 w-[200px] transition-all duration-300 overflow-hidden ${
+                isDropdownOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+              }`}
+            >
+              {categories.map((category) => (
+                <div
+                  key={category}
+                  onClick={() => handleCategorySelect(category)}
+                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer text-sm"
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
+          </div>
           <input
             type="text"
             name="productname"
             value={newItem.productname}
             onChange={handleInputChange}
             placeholder="Ürün Adı"
-            className="bg-white px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-white w-[200px] px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="number"
@@ -62,7 +87,7 @@ export default function Fetchadd() {
             value={newItem.productcount}
             onChange={handleInputChange}
             placeholder="Ürün Adeti"
-            className="bg-white px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-white w-[200px] px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
         <button

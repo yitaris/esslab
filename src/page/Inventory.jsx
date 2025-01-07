@@ -5,23 +5,16 @@ import { esslablogodark } from "../assets";
 import Logoutbtn from "../hoc/logoutbtn";
 
 //icons//
-import { GiMilkCarton,  } from "react-icons/gi";
+import { GiMilkCarton } from "react-icons/gi";
 import { BiCoffeeTogo } from "react-icons/bi";
 import { FaBottleDroplet } from "react-icons/fa6";
 import { PiHamburgerFill } from "react-icons/pi";
 import { LuCakeSlice, LuPanelsLeftBottom } from "react-icons/lu";
-import { RiRedPacketFill  } from "react-icons/ri";
+import { RiRedPacketFill } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 
 //page//
 import Fetchpanel from "../fetch/Fetchpanel";
-import Fetchpaket from "../fetch/Fetchpaket";
-import Fetchbardak from "../fetch/Fetchbardak";
-import Fetchsurup from "../fetch/Fetchsurup";
-import FetchSut from "../fetch/Fetchsut";
-import Fetchsandivic from "../fetch/Fetchsandivic";
-import Fetchpasta from "../fetch/Fetchpasta";
-import Fetchadd from "../fetch/Fetchadd";
 
 const Inventory = () => {
   const navigate = useNavigate();
@@ -36,8 +29,19 @@ const Inventory = () => {
     setSelectedCategory(category);
   };
 
+  const categories = [
+    { icon: <LuPanelsLeftBottom size={25} />, text: "Panel", category: "panel" },
+    { icon: <RiRedPacketFill size={25} />, text: "Paketler", category: "paketler" },
+    { icon: <BiCoffeeTogo size={25} />, text: "Bardaklar", category: "bardaklar" },
+    { icon: <FaBottleDroplet size={25} />, text: "Şuruplar", category: "suruplar" },
+    { icon: <GiMilkCarton size={25} />, text: "Sütler", category: "sutler" },
+    { icon: <PiHamburgerFill size={25} />, text: "Sandviç", category: "sandvic" },
+    { icon: <LuCakeSlice size={25} />, text: "Pastalar", category: "pastalar" },
+    { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
+  ];
+
   return (
-    <div className="w-full h-full relative bg-[#ffffff] text-black grid grid-rows-[100px,auto]">
+    <div className="w-full h-screen relative bg-[#fff] text-black grid grid-rows-[100px,auto]">
       {/* Header */}
       <div className="grid grid-cols-2 items-center px-10 border">
         <img src={esslablogodark} className="w-[180px]" />
@@ -47,24 +51,14 @@ const Inventory = () => {
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-[70px,1fr] gap-20 py-10">
-        {/* Sidebar */}
-        <div className="bg-red rounded-tr-2xl rounded-br-2xl relative group transition-all duration-300 w-[70px] hover:w-[150px]">
+      <div className="grid lg:grid-cols-[70px,1fr] gap-20 lg:py-10 relative">
+        {/* Sidebar for larger screens */}
+        <div className="hidden lg:flex bg-red rounded-tr-2xl rounded-br-2xl self-center relative group transition-all duration-300 w-[70px] hover:w-[150px]">
           <div className="flex flex-col items-center py-5 space-y-4">
-            {[
-              { icon: <LuPanelsLeftBottom size={25} />, text: "Panel", category: "panel" },
-              { icon: <RiRedPacketFill size={25} />, text: "Paketler", category: "paketler" },
-              { icon: <BiCoffeeTogo size={25} />, text: "Bardaklar", category: "bardaklar" },
-              { icon: <FaBottleDroplet size={25} />, text: "Şuruplar", category: "suruplar" },
-              { icon: <GiMilkCarton size={25} />, text: "Sütler", category: "sutler" },
-              { icon: <PiHamburgerFill size={25} />, text: "Sandviç", category: "sandvic" },
-              { icon: <LuCakeSlice size={25} />, text: "Pastalar", category: "pastalar" },
-              { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
-            ].map((item, index) => (
-
+            {categories.map((item, index) => (
               <button
                 key={index}
-                className={`grid grid-cols-[42px,1fr] items-center w-full text-white px-4 py-2  rounded-lg transition-all duration-300`}
+                className="grid grid-cols-[42px,1fr] items-center w-full text-white px-4 py-2 rounded-lg transition-all duration-300"
                 onClick={() => handleCategoryClick(item.category)}
               >
                 <div
@@ -84,17 +78,25 @@ const Inventory = () => {
           </div>
         </div>
 
+        {/* Bottom Tabs for smaller screens */}
+        <div className="fixed bottom-5 left-0 w-full flex justify-center items-center  lg:hidden z-50">
+  <div className="flex justify-around w-[80%] bg-red p-3 self-center rounded-xl">
+    {categories.map((item, index) => (
+      <button
+        key={index}
+        className={`flex flex-col items-center text-white ${selectedCategory === item.category ? "text-white" : "text-gray-300"}`}
+        onClick={() => handleCategoryClick(item.category)}
+      >
+        {item.icon}
+        <span className="text-xs">{item.text}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
         {/* Main Content */}
-        <div className="relative">
-            {/* Dynamic Content Based on Selected Category */}
+        <div className="relative pb-[100px] lg:pb-0">
           {selectedCategory === "panel" && <Fetchpanel />}
-          {selectedCategory === "paketler" && <Fetchpaket />}
-          {selectedCategory === "bardaklar" && <Fetchbardak />}
-          {selectedCategory === "suruplar" && <Fetchsurup />}
-          {selectedCategory === "sutler" && <FetchSut />}
-          {selectedCategory === "sandvic" && <Fetchsandivic />}
-          {selectedCategory === "pastalar" && <Fetchpasta />}
-          {selectedCategory === "ekle" && <Fetchadd />}
         </div>
       </div>
     </div>

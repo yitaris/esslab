@@ -35,8 +35,6 @@ const Inventory = () => {
     { icon: <BiCoffeeTogo size={25} />, text: "Bardaklar", category: "bardaklar" },
     { icon: <FaBottleDroplet size={25} />, text: "Şuruplar", category: "suruplar" },
     { icon: <GiMilkCarton size={25} />, text: "Sütler", category: "sutler" },
-    { icon: <PiHamburgerFill size={25} />, text: "Sandviç", category: "sandvic" },
-    { icon: <LuCakeSlice size={25} />, text: "Pastalar", category: "pastalar" },
     { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
   ];
 
@@ -79,8 +77,8 @@ const Inventory = () => {
         </div>
 
         {/* Bottom Tabs for smaller screens */}
-        <div className="fixed bottom-5 left-0 w-full flex justify-center items-center  lg:hidden z-50">
-  <div className="flex justify-around w-[80%] bg-red p-3 self-center rounded-xl">
+        <div className="fixed bottom-0 left-0 w-full flex justify-center items-center  lg:hidden z-50">
+  <div className="flex justify-around w-full bg-red p-3 self-center">
     {categories.map((item, index) => (
       <button
         key={index}

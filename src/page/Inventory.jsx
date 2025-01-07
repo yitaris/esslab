@@ -29,9 +29,9 @@ const Inventory = () => {
   const categories = [
     { icon: <LuPanelsLeftBottom size={25} />, text: "Panel", category: "panel" },
     { icon: <RiFileExcel2Line size={25} />, text: "Rapor", category: "rapor" },
-    { icon: <RiFileExcel2Line size={25} />, text: "Bardaklar", category: "bardaklar" },
-    { icon: <RiFileExcel2Line size={25} />, text: "Şuruplar", category: "suruplar" },
-    { icon: <RiFileExcel2Line size={25} />, text: "Sütler", category: "sutler" },
+    { icon: <RiFileExcel2Line size={25} />, text: "Shift", category: "shift" },
+    { icon: <RiFileExcel2Line size={25} />, text: "SKT", category: "skt" },
+    { icon: <RiFileExcel2Line size={25} />, text: "Kontrol", category: "kontrol" },
     { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
   ];
 

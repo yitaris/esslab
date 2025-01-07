@@ -5,16 +5,13 @@ import { esslablogodark } from "../assets";
 import Logoutbtn from "../hoc/logoutbtn";
 
 //icons//
-import { GiMilkCarton } from "react-icons/gi";
-import { BiCoffeeTogo } from "react-icons/bi";
-import { FaBottleDroplet } from "react-icons/fa6";
-import { PiHamburgerFill } from "react-icons/pi";
-import { LuCakeSlice, LuPanelsLeftBottom } from "react-icons/lu";
-import { RiRedPacketFill } from "react-icons/ri";
+import { LuPanelsLeftBottom } from "react-icons/lu";
+import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 
 //page//
 import Fetchpanel from "../fetch/Fetchpanel";
+import Fetchrapor from "../fetch/Fetchrapor";
 
 const Inventory = () => {
   const navigate = useNavigate();
@@ -31,10 +28,10 @@ const Inventory = () => {
 
   const categories = [
     { icon: <LuPanelsLeftBottom size={25} />, text: "Panel", category: "panel" },
-    { icon: <RiRedPacketFill size={25} />, text: "Paketler", category: "paketler" },
-    { icon: <BiCoffeeTogo size={25} />, text: "Bardaklar", category: "bardaklar" },
-    { icon: <FaBottleDroplet size={25} />, text: "Şuruplar", category: "suruplar" },
-    { icon: <GiMilkCarton size={25} />, text: "Sütler", category: "sutler" },
+    { icon: <RiFileExcel2Line size={25} />, text: "Rapor", category: "rapor" },
+    { icon: <RiFileExcel2Line size={25} />, text: "Bardaklar", category: "bardaklar" },
+    { icon: <RiFileExcel2Line size={25} />, text: "Şuruplar", category: "suruplar" },
+    { icon: <RiFileExcel2Line size={25} />, text: "Sütler", category: "sutler" },
     { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
   ];
 
@@ -95,6 +92,7 @@ const Inventory = () => {
         {/* Main Content */}
         <div className="relative pb-[100px] lg:pb-0">
           {selectedCategory === "panel" && <Fetchpanel />}
+          {selectedCategory === "rapor" && <Fetchrapor />}
         </div>
       </div>
     </div>

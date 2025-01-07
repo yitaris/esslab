@@ -78,6 +78,24 @@ export const SupabaseProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const handleSubmit = async (formData) => {
+    const today = new Date().toISOString().split('T')[0]; // Bugünün tarihi
+    const fileName = `rapor-${today}.json`; // Dosya adı: rapor-YYYY-MM-DD.json
+  
+    // Supabase Storage'a dosya yükleme
+    const { data, error } = await supabase.storage
+      .from('raporlar') // 'raporlar' adlı bir bucket oluşturduğunuzdan emin olun
+      .upload(fileName, new Blob([JSON.stringify(formData)], { type: 'application/json' }), {
+        contentType: 'application/json',
+      });
+  
+    if (error) {
+      console.error('Dosya yükleme hatası:', error.message);
+    } else {
+      console.log('Dosya başarıyla yüklendi:', data);
+    }
+  };
+
   const value = {
     data,
     loading,
@@ -85,6 +103,7 @@ export const SupabaseProvider = ({ children }) => {
     fetchInventory,
     updateInventory,
     addInventory,
+    handleSubmit,
   };
 
   return (

@@ -67,7 +67,7 @@ export const SupabaseProvider = ({ children }) => {
     const { data, error } = await supabase
       .from(INVENTORY_TABLE)
       .insert([{ ...newItem, zaman: new Date() }]);
-  
+
     if (error) {
       console.error("Envanter ekleme hatası:", error.message);
       alert(`Hata: ${error.message}`);
@@ -77,22 +77,31 @@ export const SupabaseProvider = ({ children }) => {
     }
     setLoading(false);
   };
+  // Veri Kaydetme Fonksiyonu
+  const saveExcelDatabase = async (data) => {
+    try {
+      const { error } = await supabase
+        .from('raporlar')
+        .insert(data);
 
-  const handleSubmit = async (formData) => {
-    const today = new Date().toISOString().split('T')[0]; // Bugünün tarihi
-    const fileName = `rapor-${today}.json`; // Dosya adı: rapor-YYYY-MM-DD.json
-  
-    // Supabase Storage'a dosya yükleme
-    const { data, error } = await supabase.storage
-      .from('raporlar') // 'raporlar' adlı bir bucket oluşturduğunuzdan emin olun
-      .upload(fileName, new Blob([JSON.stringify(formData)], { type: 'application/json' }), {
-        contentType: 'application/json',
-      });
-  
-    if (error) {
-      console.error('Dosya yükleme hatası:', error.message);
-    } else {
-      console.log('Dosya başarıyla yüklendi:', data);
+      if (error) throw error;
+      console.log('Data saved successfully!');
+    } catch (error) {
+      console.error('Error saving data:', error.message);
+    }
+  };
+
+  // Veri Getirme Fonksiyonu
+  const fetchExcelDatabase = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('raporlar')
+        .select('*');
+
+      if (error) throw error;
+      setSavedReports(data);
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
     }
   };
 
@@ -103,7 +112,8 @@ export const SupabaseProvider = ({ children }) => {
     fetchInventory,
     updateInventory,
     addInventory,
-    handleSubmit,
+    saveExcelDatabase,
+    fetchExcelDatabase,
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSupabase } from "../context/SupabaseContext";
-import { esslabicon } from "../assets";
+import { ubgida2 } from "../assets";
 
 import { MdKeyboardArrowDown,MdSaveAs  } from "react-icons/md";
 import { GiMilkCarton } from "react-icons/gi";
@@ -23,10 +23,6 @@ export default function Fetchpanel() {
 
   useEffect(() => {
     fetchFullInventory(); // Fetch all items
-  }, []);
-
-  useEffect(() => {
-    // Adjust the height based on the window size
     const updateContainerHeight = () => {
       const viewportHeight = window.innerHeight;
       const headerHeight = 150; // Approximate height for the fixed elements (adjust as needed)
@@ -41,7 +37,6 @@ export default function Fetchpanel() {
   const handleSave = async (id) => {
     await updateInventory(id, { productcount: editedValue });
     setEditMode(null);
-    fetchFullInventory(); // Refresh inventory after update
   };
 
   // Filter data based on search term and selected category
@@ -55,16 +50,16 @@ export default function Fetchpanel() {
     return (
       <div className="absolute inset-0 grid place-content-center">
         <img
-          src={esslabicon}
+          src={ubgida2}
           alt="Loading..."
-          className="w-20 h-20 animate-pulse"
+          className="w-30 h-30 animate-pulse"
         />
       </div>
     );
 
   return (
     <div className="w-full h-full lg:px-10 relative">
-      <div className="bg-gray-50 rounded-2xl shadow-lg p-5 h-full relative">
+      <div className="bg-gray-50 lg:rounded-2xl shadow-lg p-5 h-full relative">
         {/* Search Bar */}
         <div className="mb-4 mt-4 grid place-content-center">
           <input
@@ -72,17 +67,17 @@ export default function Fetchpanel() {
             placeholder="Ürün adı ara..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-white w-[300px] px-4 py-2 border rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-white w-[300px] px-4 py-2 border rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#012922]"
           />
         </div>
         {/* Header for All Items */}
-        <div className="grid grid-cols-[1fr,2fr,2fr,1fr] text-lg font-semibold text-green-500 border-b pb-2 mb-2">
+        <div className="grid grid-cols-[1fr,2fr,2fr,1fr] text-lg font-semibold text-[#012922] border-b pb-2 mb-2">
           <div className="">
             {/* Dropdown Filter for Categories */}
             <div className="relative mb-4">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="gap-2 w-auto flex justify-between items-center focus:text-red ring-0"
+                className="gap-2 w-auto flex justify-between items-center focus:text-[#012922] ring-0"
               >
                 <span className="hidden lg:block">Ürün</span>
                 <span>Kategori</span>
@@ -96,7 +91,7 @@ export default function Fetchpanel() {
                         setSelectedCategory("hepsi");
                         setDropdownOpen(false);
                       }}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100 font-light text-black"
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100 font-light text-[#012922]"
                     >
                       Hepsi
                     </li>
@@ -107,7 +102,7 @@ export default function Fetchpanel() {
                           setSelectedCategory(category);
                           setDropdownOpen(false);
                         }}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-black font-light"
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-[##012922] font-light"
                       >
                         {category}
                       </li>
@@ -142,22 +137,22 @@ export default function Fetchpanel() {
             >
               <div className="flex gap-2 items-center">
                 {item.category === "paket" && (
-                  <RiRedPacketFill fill="red"/>
+                  <RiRedPacketFill fill="#012922"/>
                   )}
                   {item.category === "surup" && (
-                  <FaBottleDroplet fill="red"/>
+                  <FaBottleDroplet fill="#012922"/>
                   )}
                   {item.category === "sut" && (
-                  <GiMilkCarton fill="red"/>
+                  <GiMilkCarton fill="#012922"/>
                   )}
                   {item.category === "pasta" && (
-                  <LuCakeSlice fill="red" stroke="white"/>
+                  <LuCakeSlice fill="#012922" stroke="white"/>
                   )}
                   {item.category === "sandivic" && (
-                  <PiHamburgerFill fill="red" stroke="white"/>
+                  <PiHamburgerFill fill="#012922" stroke="white"/>
                   )}
                    {item.category === "bardak" && (
-                  <BiCoffeeTogo fill="red" stroke="white"/>
+                  <BiCoffeeTogo fill="#012922" stroke="white"/>
                   )}
                   {item.category}
               </div>
@@ -179,7 +174,7 @@ export default function Fetchpanel() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleSave(item.id)}
-                      className="bg-green-500 text-white px-3 py-1 rounded"
+                      className="bg-[#012922] text-white px-3 py-1 rounded"
                     >
                       <MdSaveAs />
                     </button>
@@ -196,7 +191,7 @@ export default function Fetchpanel() {
                       setEditMode(item.id);
                       setEditedValue(item.productcount);
                     }}
-                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                    className="bg-[#012922] text-white px-3 py-1 rounded"
                   >
                     Düzenle
                   </button>

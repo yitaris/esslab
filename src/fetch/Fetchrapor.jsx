@@ -1,16 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { categories } from '../constants';
+import { ubgida2 } from '../assets';
 import ExcelJS from 'exceljs';
 import CardElements from '../hoc/cards';
-
 import { useSupabase } from '../context/SupabaseContext';
 
-export default function Fetchrapor() {
-    const { saveExcelDatabase, fetchExcelDatabase,} = useSupabase();
-  
+import { IoCaretBackOutline } from "react-icons/io5";
+import { MdSaveAs } from "react-icons/md";
 
-    
-    const [data, setData] = useState(
+export default function Fetchrapor() {
+    const { fetchExcelDatabase, loading, excelDataPublic, saveAndStoreExcelReport, handleDrop, downloadFile } = useSupabase();
+    const [showTable, setShowTable] = useState(false);
+    const [dragOver, setDragOver] = useState(false);
+    const [savedReports, setSavedReports] = useState([]);
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setDragOver(true);
+    };
+
+    const dropDrag = async (e) => {
+        e.preventDefault();
+        setDragOver(false);
+
+        const file = e.dataTransfer.files[0];
+        const fileName = file.name;
+        const filePath = `raporlar/${file.name}`;
+
+        handleDrop(filePath, file, fileName);
+    }
+
+
+
+    useEffect(() => {
+        fetchExcelDatabase();
+    }, [])
+
+    const [dataExcel, setDataExcel] = useState(
         categories.reduce((acc, category) => {
             acc[category.name] = Array.from({ length: category.rows }, () =>
                 Array(9).fill('')
@@ -18,17 +44,24 @@ export default function Fetchrapor() {
             return acc;
         }, {})
     );
-
-    const [showTable, setShowTable] = useState(false);
-    const [savedReports, setSavedReports] = useState([]);
-
     const handleChange = (categoryName, rowIndex, columnIndex, value) => {
-        setData((prevData) => {
+        setDataExcel((prevData) => {
             const updatedCategory = [...prevData[categoryName]];
             updatedCategory[rowIndex][columnIndex] = value;
             return { ...prevData, [categoryName]: updatedCategory };
         });
     };
+
+    if (loading)
+        return (
+            <div className="absolute inset-0 grid place-content-center">
+                <img
+                    src={ubgida2}
+                    alt="Loading..."
+                    className="w-30 h-30 animate-pulse"
+                />
+            </div>
+        );
 
     const exportToExcel = async () => {
         const workbook = new ExcelJS.Workbook();
@@ -55,7 +88,7 @@ export default function Fetchrapor() {
                 };
             });
 
-            data[category.name].forEach((row, index) => {
+            dataExcel[category.name].forEach((row, index) => {
                 const newRow = worksheet.addRow([category.alt[index], ...row]);
                 newRow.eachCell((cell) => {
                     cell.border = {
@@ -85,6 +118,7 @@ export default function Fetchrapor() {
         link.click();
 
         // Save the report's date as a history entry
+        saveAndStoreExcelReport(filename, buffer);
         setSavedReports((prevReports) => [...prevReports, `${day}-${month}-${year}`]);
         setShowTable(false);
     };
@@ -92,7 +126,7 @@ export default function Fetchrapor() {
     const renderTable = (category) => (
         <div key={category.name} className="mb-5">
             <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse border border-gray-300 text-sm">
+                <table className="min-w-full border-collapse border border-[#032722] text-sm">
                     <thead>
                         <tr className="bg-gray-100 text-left">
                             <th className="border border-gray-300 px-4 py-2 text-center w-[200px]">{category.name}</th>
@@ -116,7 +150,7 @@ export default function Fetchrapor() {
                                         <input
                                             type="text"
                                             className="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            value={data[category.name][rowIndex][columnIndex]}
+                                            value={dataExcel[category.name][rowIndex][columnIndex]}
                                             onChange={(e) =>
                                                 handleChange(category.name, rowIndex, columnIndex, e.target.value)
                                             }
@@ -133,45 +167,65 @@ export default function Fetchrapor() {
 
     return (
         <div className="w-full h-full lg:px-10">
-            <div className="bg-gray-50 rounded-2xl shadow-lg p-5 h-full relative overflow-hidden grid grid-rows-[1fr,50px]" style={{ maxHeight: '90vh' }}>
+            <div className="w-full h-full bg-gray-50  lg:rounded-2xl shadow-lg p-5 relative overflow-hidden grid grid-rows-[1fr,50px]" style={{ maxHeight: '90vh' }}>
                 {showTable && (
-                    <div>
-                        <div className="overflow-y-auto" style={{ maxHeight: 'calc(80vh - 100px)' }}>
-                            {categories.map(renderTable)}
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
+                        <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-h-[80vh] overflow-y-auto">
+                            <div className="p-0">
+                                <div className='flex items-center justify-between'>
+                                    <button
+                                        onClick={() => setShowTable(false)}
+                                        className="text-[#032722] hover:text-green-700 p-2"
+                                    >
+
+                                        <IoCaretBackOutline size={30} />
+                                    </button>
+                                    <button
+                                        onClick={exportToExcel}
+                                        className={`p-2 bg-[#032722] hover:bg-green-700 text-white rounded mr-2`}
+                                    >
+                                        <MdSaveAs />
+                                    </button>
+                                </div>
+                                {categories.map(renderTable)}
+
+
+                            </div>
                         </div>
-                        <button
-                            onClick={exportToExcel}
-                            className="mt-5 px-4 py-2 bg-green-500 text-white rounded"
-                        >
-                            Excel'e Aktar
-                        </button>
-                        <button
-                            onClick={() => setShowTable(false)}
-                            className="mt-5 ml-2 px-4 py-2 bg-gray-500 text-white rounded"
-                        >
-                            Geri Çık
-                        </button>
                     </div>
                 )}
 
                 {!showTable && (
-                    <div className="h-full flex flex-wrap gap-3">
-                        
-                        <CardElements />
-                        <CardElements />
-                        <CardElements />
-                        <CardElements />
+                    <div className='grid 2xl:grid-cols-10 xl:grid-cols-8 lg:grid-cols-6 md:grid-cols-4 grid-cols-2'>
+                        {excelDataPublic.map((item, index) => (
+                            <div
+                                key={index}
+                                className=''
+                                onClick={() => downloadFile(item.dosya_url)} // Anonim fonksiyon ekliyoruz
+                            >
+                                <CardElements
+                                    day={`${new Date(item.time).toLocaleDateString("tr-TR", {
+                                        day: "2-digit",
+                                    })}`}
+                                    month={`${new Date(item.time).toLocaleDateString("tr-TR", {
+                                        month: "2-digit",
+                                    })}`}
+                                    year={`${new Date(item.time).toLocaleDateString("tr-TR", {
+                                        year: "numeric",
+                                    })}`}
+                                />
+                            </div>
+                        ))}
+                        <button
+                            onClick={() => setShowTable(true)}
+                            onDragOver={handleDragOver}
+                            onDrop={dropDrag}
+                            className="h-24 w-32 opacity-50 text-red hover:opacity-100"
+                        >
+                            <CardElements save={true} />
+                        </button>
                     </div>
                 )}
-                {!showTable && (
-                    <button
-                        onClick={() => setShowTable(true)}
-                        className="px-4 py-2 bg-green-500 text-white rounded w-[150px]"
-                    >
-                        Rapor Oluştur
-                    </button>
-                )}
-                
             </div>
         </div>
     );

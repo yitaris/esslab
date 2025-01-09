@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import { esslablogodark } from "../assets";
+import { esslablogodark,ubgida,ubkahve } from "../assets";
 import Logoutbtn from "../hoc/logoutbtn";
 
 //icons//
@@ -38,8 +38,8 @@ const Inventory = () => {
   return (
     <div className="w-full h-screen relative bg-[#fff] text-black grid grid-rows-[100px,auto]">
       {/* Header */}
-      <div className="grid grid-cols-2 items-center px-10 border">
-        <img src={esslablogodark} className="w-[180px]" />
+      <div className="grid grid-cols-2 items-center px-10 bg-[#032722] border-b border-[#a3a3a35b]">
+        <img src={ubgida} className="w-[100px]" />
         <button className="flex justify-end" onClick={handleLogout}>
           <Logoutbtn />
         </button>
@@ -48,7 +48,7 @@ const Inventory = () => {
       {/* Content */}
       <div className="grid lg:grid-cols-[70px,1fr] gap-20 lg:py-10 relative">
         {/* Sidebar for larger screens */}
-        <div className="hidden lg:flex bg-red rounded-tr-2xl rounded-br-2xl self-center relative group transition-all duration-300 w-[70px] hover:w-[150px]">
+        <div className="hidden lg:flex bg-[#032722] rounded-tr-2xl rounded-br-2xl self-center relative group transition-all duration-300 w-[70px] hover:w-[150px]">
           <div className="flex flex-col items-center py-5 space-y-4">
             {categories.map((item, index) => (
               <button
@@ -57,13 +57,13 @@ const Inventory = () => {
                 onClick={() => handleCategoryClick(item.category)}
               >
                 <div
-                  className="hover:bg-red-600 rounded-xl p-2 transition-all duration-300 transform hover:scale-105"
+                  className="hover:bg-green-900 rounded-xl p-2 transition-all duration-300 transform hover:scale-105"
                   style={{ transitionTimingFunction: "ease-in-out" }}
                 >
                   {item.icon}
                 </div>
                 <span
-                  className="ml-2 hidden group-hover:inline-block opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="ml-2 opacity-0 transition-opacity duration-400 ease-out transform translate-x-4 group-hover:opacity-100"
                   style={{ transitionTimingFunction: "ease-in-out" }}
                 >
                   {item.text}
@@ -75,7 +75,7 @@ const Inventory = () => {
 
         {/* Bottom Tabs for smaller screens */}
         <div className="fixed bottom-0 left-0 w-full flex justify-center items-center  lg:hidden z-50">
-  <div className="flex justify-around w-full bg-red p-3 self-center">
+  <div className="flex justify-around w-full bg-[#032722] p-3 self-center">
     {categories.map((item, index) => (
       <button
         key={index}

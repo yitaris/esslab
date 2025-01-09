@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { esslabicon } from "../assets";
+import { esslabicon,ubgida2,ubkahve } from "../assets";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
@@ -53,9 +53,9 @@ const Login = () => {
         return (
             <div className="h-screen flex items-center justify-center bg-white">
                 <motion.img
-                    src={esslabicon}
+                    src={ubgida2}
                     alt="Logo"
-                    className="w-[150px] h-[130px]"
+                    className="w-[200px] h-[200px]"
                     animate={{ opacity: [0, 1, 0] }}
                     transition={{ repeat: Infinity, duration: 1.5 }}
                 />
@@ -73,17 +73,17 @@ const Login = () => {
             >
                 <div className="p-5 h-full grid place-content-center sm:place-content-start">
                     <motion.img
-                        src={esslabicon}
+                        src={ubgida2}
                         alt="Logo"
-                        className="w-[150px] h-[130px]"
+                        className="w-[200px] h-[200px]"
                     />
                     <div className="flex flex-col items-center sm:items-start">
-                        <div className="text-[#b32017] text-xl font-bold">ESSPRESSOLAB</div>
-                        <div className="text-[#b32017] text-xl font-bold">AGORA AVM</div>
-                        <div className="text-[#b32017] text-xl font-bold">STOK</div>
+                        <div className="text-[#02aa6d] text-2xl font-bold">ESSPRESSOLAB</div>
+                        <div className="text-[#02aa6d] text-2xl font-bold">AGORA AVM</div>
+                        <div className="text-[#02aa6d] text-2xl font-bold">STOK</div>
                     </div>
                 </div>
-                <div className="bg-[#b32017] p-5 rounded-[17px]">
+                <div className="bg-[#032722] p-5 rounded-[17px]">
                     <h2 className="text-2xl font-mono text-white mb-4">Hoşgeldiniz</h2>
                     <form onSubmit={handleLogin} className="flex flex-col">
                         <p className="text-md mb-1">Email</p>
@@ -112,13 +112,13 @@ const Login = () => {
                                 className="absolute right-3 top-3"
                                 onClick={togglePasswordVisibility}
                             >
-                                {passwordVisible ? <FaEyeSlash className="text-[#b32017]" /> : <FaEye className="text-[#b32017]" />}
+                                {passwordVisible ? <FaEyeSlash className="text-[#02aa6d]" /> : <FaEye className="text-[#02aa6d]" />}
                             </button>
                         </div>
                         {error && <p className="text-white text-sm mb-2">{error}</p>}
                         <button
                             type="submit"
-                            className="bg-[#b32017] text-[#fff] hover:bg-white hover:text-[#b32017] duration-500 font-bold py-2 px-4 rounded-md mt-4"
+                            className="bg-[#032722] text-[#fff] hover:bg-white hover:text-[#02aa6d] duration-500 font-bold py-2 px-4 rounded-md mt-4"
                         >
                             Giriş Yap
                         </button>

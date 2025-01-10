@@ -1,101 +1,114 @@
-import React, { useState } from "react";
-import { useSupabase } from "../context/SupabaseContext";
-import { esslabicon } from "../assets";
+import React, { useState, useEffect } from "react";
+import { FaCalendarAlt } from "react-icons/fa";
+import { IoTime, IoSearch } from "react-icons/io5";
+import { LuGalleryVerticalEnd } from "react-icons/lu";
+import { ubgida } from "../assets";
 
 export default function Fetchadd() {
-  const { data, loading, addInventory } = useSupabase();
-  const [newItem, setNewItem] = useState({
-    category: "",
-    productname: "",
-    productcount: "",
-  });
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
 
-  const categories = ["paket", "bardak", "surup", "sut", "sandivic", "pasta"];
+  // Türkiye saatine göre tarih ve zaman ayarları
+  useEffect(() => {
+    const updateDateTime = () => {
+      const now = new Date();
+      const optionsDate = {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "Europe/Istanbul",
+      };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewItem((prev) => ({ ...prev, [name]: value }));
-  };
+      const optionsTime = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZone: "Europe/Istanbul",
+      };
 
-  const handleCategorySelect = (category) => {
-    setNewItem((prev) => ({ ...prev, category }));
-    setIsDropdownOpen(false); // Menü kapatılır
-  };
+      setCurrentDate(new Intl.DateTimeFormat("tr-TR", optionsDate).format(now));
+      setCurrentTime(new Intl.DateTimeFormat("tr-TR", optionsTime).format(now));
+    };
 
-  const handleAddItem = async () => {
-    if (!newItem.category || !newItem.productname || !newItem.productcount) {
-      alert("Lütfen tüm alanları doldurun!");
-      return;
-    }
-    await addInventory({ ...newItem, zaman: new Date() });
-    setNewItem({ category: "", productname: "", productcount: "" }); // Formu temizle
-  };
+    updateDateTime();
+    const intervalId = setInterval(updateDateTime, 1000);
 
-  if (loading)
-    return (
-      <div className="absolute inset-0 grid place-content-center">
-        <img
-          src={esslabicon}
-          alt="Loading..."
-          className="w-20 h-20 animate-pulse"
-        />
-      </div>
-    );
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const items = [
+    { title: "Tümü", subtitle: "100 Ürün Var" },
+    { title: "Paketler", subtitle: "50 Ürün Var" },
+    { title: "Bardaklar", subtitle: "50 Ürün Var" },
+    { title: "Sandviçler", subtitle: "50 Ürün Var" },
+    { title: "Pastalar", subtitle: "25 Ürün Var" },
+    { title: "Kurabiyeler", subtitle: "75 Ürün Var" },
+    { title: "Kek", subtitle: "120 Ürün Var" },
+    { title: "İçecekler", subtitle: "120 Ürün Var" },
+    { title: "GrapGo", subtitle: "120 Ürün Var" },
+  ];
 
   return (
-    <div className="h-full px-10">
-      <div className="bg-gray-50 rounded-2xl shadow-lg p-4 h-full">
-        <h1 className="text-2xl font-semibold mb-4">Yeni Ürün Ekle</h1>
-        <div className="grid gap-4 mb-6">
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setIsDropdownOpen((prev) => !prev)}
-              className="bg-white px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-[200px] text-left"
-            >
-              {newItem.category || "Kategori Seçin"}
-              <span className="float-right">▼</span>
-            </button>
-            <div
-              className={`absolute z-10 bg-white border rounded-xl shadow-md mt-2 w-[200px] transition-all duration-300 overflow-hidden ${
-                isDropdownOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
-              }`}
-            >
-              {categories.map((category) => (
-                <div
-                  key={category}
-                  onClick={() => handleCategorySelect(category)}
-                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer text-sm"
-                >
-                  {category}
-                </div>
-              ))}
+    <div className="w-full h-full lg:p-10">
+      <div className="bg-[#fbfbfbf5] w-full h-full lg:rounded-2xl p-5 grid grid-rows-[50px,130px,50px,1fr] gap-5">
+        {/* Date and Time Section */}
+        <div className="grid grid-cols-[250px,10px,150px] gap-2">
+          <div className="bg-white flex items-center rounded-2xl px-3 shadow-md">
+            <div className="bg-[#3c3b3ba6] p-2 flex justify-center items-center rounded-full">
+              <FaCalendarAlt fill="white" />
             </div>
+            <span className="ml-3 text-gray-700 capitalize font-bold">
+              {currentDate}
+            </span>
           </div>
-          <input
-            type="text"
-            name="productname"
-            value={newItem.productname}
-            onChange={handleInputChange}
-            placeholder="Ürün Adı"
-            className="bg-white w-[200px] px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <input
-            type="number"
-            name="productcount"
-            value={newItem.productcount}
-            onChange={handleInputChange}
-            placeholder="Ürün Adeti"
-            className="bg-white w-[200px] px-4 py-2 border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+          <span className="flex items-center text-2xl">-</span>
+          <div className="bg-white flex items-center rounded-2xl px-3 shadow-md">
+            <div className="bg-[#3c3b3ba6] p-2 flex justify-center items-center rounded-full">
+              <IoTime fill="white" />
+            </div>
+            <span className="ml-3 text-gray-700 font-bold">{currentTime}</span>
+          </div>
         </div>
-        <button
-          onClick={handleAddItem}
-          className="bg-green-500 text-white px-4 py-2 rounded-xl shadow hover:bg-green-600"
-        >
-          Ekle
-        </button>
+
+        {/* Category Section */}
+        <div className="flex space-x-4">
+          {items.map((item, index) => (
+            <div key={index} className="bg-white w-[130px] h-[130px] rounded-2xl flex flex-col justify-between p-3 shadow-md">
+              <div className="bg-[#3c3b3ba6] w-[30px] h-[30px] flex items-center justify-center p-1 rounded-full">
+                <LuGalleryVerticalEnd fill="#fff" stroke="white" />
+              </div>
+              <span className="font-bold">{item.title}</span>
+              <span>{item.subtitle}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Product Search */}
+        <div className="bg-white w-[715px] rounded-2xl p-3 flex justify-between items-center shadow-md">
+          <span className="text-gray-400">Ürünleri adı ile arayabilirsiniz...</span>
+          <div className="bg-[#807f7f] p-2 rounded-2xl">
+            <IoSearch fill="white" />
+          </div>
+        </div>
+
+        {/* Product List */}
+        <div className="flex gap-5">
+          {[...Array(2)].map((_, index) => (
+            <div key={index} className="bg-white w-[180px] h-[200px] rounded-2xl grid grid-rows-[2fr-1fr] p-2 gap-3 shadow-md">
+              <div className="rounded-2xl bg-[#f2f2f2] grid place-content-center">
+                <img src={ubgida} className="w-20 h-20" />
+              </div>
+              <div className="flex flex-col justify-around">
+                <span className="font-bold">Ürün Adı</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-orange-500">Ürün Kategorisi</span>
+                  <button className="text-lg mr-2">+</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

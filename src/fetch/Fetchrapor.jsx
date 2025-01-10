@@ -167,7 +167,7 @@ export default function Fetchrapor() {
 
     return (
         <div className="w-full h-full lg:px-10">
-            <div className="w-full h-full bg-gray-50  lg:rounded-2xl shadow-lg p-5 relative overflow-hidden grid grid-rows-[1fr,50px]" style={{ maxHeight: '90vh' }}>
+            <div className="w-full h-full bg-gray-50  lg:rounded-2xl shadow-lg relative grid">
                 {showTable && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
                         <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-h-[80vh] overflow-y-auto">
@@ -196,7 +196,7 @@ export default function Fetchrapor() {
                 )}
 
                 {!showTable && (
-                    <div className='grid 2xl:grid-cols-10 xl:grid-cols-8 lg:grid-cols-6 md:grid-cols-4 grid-cols-2'>
+                    <div className='h-full grid 2xl:grid-cols-10 xl:grid-cols-8 lg:grid-cols-6 md:grid-cols-4 grid-cols-2'>
                         {excelDataPublic.map((item, index) => (
                             <div
                                 key={index}

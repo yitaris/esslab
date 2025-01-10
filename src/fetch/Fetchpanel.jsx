@@ -58,147 +58,24 @@ export default function Fetchpanel() {
     );
 
   return (
-    <div className="w-full h-full lg:px-10 relative">
-      <div className="bg-gray-50 lg:rounded-2xl shadow-lg p-5 h-full relative">
-        {/* Search Bar */}
-        <div className="mb-4 mt-4 grid place-content-center">
-          <input
-            type="text"
-            placeholder="Ürün adı ara..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-white w-[300px] px-4 py-2 border rounded-2xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-[#012922]"
-          />
-        </div>
-        {/* Header for All Items */}
-        <div className="grid grid-cols-[1fr,2fr,2fr,1fr] text-lg font-semibold text-[#012922] border-b pb-2 mb-2">
-          <div className="">
-            {/* Dropdown Filter for Categories */}
-            <div className="relative mb-4">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="gap-2 w-auto flex justify-between items-center focus:text-[#012922] ring-0"
-              >
-                <span className="hidden lg:block">Ürün</span>
-                <span>Kategori</span>
-                <MdKeyboardArrowDown size={25} />
-              </button>
-              {dropdownOpen && (
-                <div className="absolute z-10 bg-white w-[90px] border rounded-2xl shadow-md mt-2 ml-[50px]">
-                  <ul className="divide-y divide-gray-200">
-                    <li
-                      onClick={() => {
-                        setSelectedCategory("hepsi");
-                        setDropdownOpen(false);
-                      }}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100 font-light text-[#012922]"
-                    >
-                      Hepsi
-                    </li>
-                    {categories.map((category) => (
-                      <li
-                        key={category}
-                        onClick={() => {
-                          setSelectedCategory(category);
-                          setDropdownOpen(false);
-                        }}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-[##012922] font-light"
-                      >
-                        {category}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+    <div className="w-full h-full lg:p-10">
+      <div className="bg-[#fbfbfbf5] w-full h-full lg:rounded-2xl p-5 grid grid-rows-[300px,1fr] gap-5">
+        <div className="grid grid-cols-4 gap-5">
+          <div className="bg-white flex items-center justify-center rounded-2xl">
+            1
           </div>
-          <div className="gap-2 flex">
-            <span className="hidden lg:block">Ürün</span>
-            <span>İsmi</span>
+          <div className="bg-white flex items-center justify-center rounded-2xl">
+            1
           </div>
-          <div className="gap-2 flex">
-            <span className="hidden lg:block">Ürün</span>
-            <span>Adet</span>
+          <div className="bg-white flex items-center justify-center rounded-2xl">
+            1
           </div>
-          <div className="gap-2 flex justify-center lg:justify-start">
-            Aksiyon
+          <div className="bg-white flex items-center justify-center rounded-2xl">
+            1
           </div>
         </div>
-
-        {/* All Filtered Data */}
-        <div
-          className="overflow-y-auto scrollbar-hide"
-          style={{ maxHeight: `${containerHeight}px` }}
-        >
-          {filteredData.map((item) => (
-            <div
-              key={item.id}
-              className="grid grid-cols-[1fr,2fr,2fr,1fr] items-center py-2 border-b last:border-b-0 text-sm"
-            >
-              <div className="flex gap-2 items-center">
-                {item.category === "paket" && (
-                  <RiRedPacketFill fill="#012922"/>
-                  )}
-                  {item.category === "surup" && (
-                  <FaBottleDroplet fill="#012922"/>
-                  )}
-                  {item.category === "sut" && (
-                  <GiMilkCarton fill="#012922"/>
-                  )}
-                  {item.category === "pasta" && (
-                  <LuCakeSlice fill="#012922" stroke="white"/>
-                  )}
-                  {item.category === "sandivic" && (
-                  <PiHamburgerFill fill="#012922" stroke="white"/>
-                  )}
-                   {item.category === "bardak" && (
-                  <BiCoffeeTogo fill="#012922" stroke="white"/>
-                  )}
-                  {item.category}
-              </div>
-              <div>{item.productname}</div>
-              <div className="">
-                {editMode === item.id ? (
-                  <input
-                    type="number"
-                    value={editedValue}
-                    onChange={(e) => setEditedValue(e.target.value)}
-                    className="w-[50px] px-2 py-1 border rounded bg-white"
-                  />
-                ) : (
-                  item.productcount
-                )}
-              </div>
-              <div>
-                {editMode === item.id ? (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleSave(item.id)}
-                      className="bg-[#012922] text-white px-3 py-1 rounded"
-                    >
-                      <MdSaveAs />
-                    </button>
-                    <button
-                      onClick={() => setEditMode(null)}
-                      className="bg-red text-white px-3 py-1 rounded"
-                    >
-                      X
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setEditMode(item.id);
-                      setEditedValue(item.productcount);
-                    }}
-                    className="bg-[#012922] text-white px-3 py-1 rounded"
-                  >
-                    Düzenle
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+        <div className="bg-white rounded-2xl">
+          as
         </div>
       </div>
     </div>

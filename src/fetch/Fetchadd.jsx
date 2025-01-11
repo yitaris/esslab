@@ -251,7 +251,7 @@ export default function Fetchadd() {
                 <img
                   src={item.image_url}
                   alt={item.name}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full ${item.category === "Şurup" ? "object-contain" : "object-cover"} rounded-2xl`}
                 />
               </div>
 

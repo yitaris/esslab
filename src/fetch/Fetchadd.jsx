@@ -23,7 +23,11 @@ export default function Fetchadd() {
   const [productList, setProductList] = useState([]);
 
   const addProduct = (product) => {
+    setOpenProductList(true);
     setProductList([...productList, product]);
+  };
+  const handleRemoveProduct = (index) => {
+    setProductList((prevList) => prevList.filter((_, i) => i !== index));
   };
 
   // Tarih ve zaman ayarı
@@ -107,8 +111,11 @@ export default function Fetchadd() {
   };
 
   const handleProductList = () => {
-    setOpenProductList((prev) => !prev);
+    setOpenProductList(true);
   };
+  const handleCloseProductList = () => {
+    setOpenProductList(false);
+  }
 
   return (
     <motion.div
@@ -123,31 +130,95 @@ export default function Fetchadd() {
         className="bg-[#fbfbfbf5] relative w-full h-full rounded-lg lg:rounded-2xl p-5 grid gap-5 grid-rows-[auto,auto,auto,1fr]"
       >
         <AnimatePresence>
-          {openProductList && (
-            <motion.div
-              className={`bg-white absolute h-full right-0 rounded-2xl`}
-              initial={{ width: '50px' }}
-              animate={{ width: '300px' }}
-              exit={{ width: '50px' }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="w-full h-full p-5">
-                <TbArrowBarRight size={25} onClick={handleProductList} className="cursor-pointer" />
-                <div className="mt-5">
-                  {productList.map((product, index) => (
-                    <div key={index} className="flex items-center mb-4">
-                      <img src={product.image} alt={product.name} className="w-20 h-20 mr-4 rounded-2xl" />
-                      <div>
-                        <h4 className="text-lg font-semibold">{product.name}</h4>
-                        <p className="text-sm text-gray-600">{product.category}</p>
-                      </div>
-                    </div>
-                  ))}
+  {openProductList && (
+    <motion.div
+      className="bg-white absolute h-full right-0 rounded-2xl overflow-y-scroll"
+      initial={{ width: '50px' }}
+      animate={{ width: '350px' }}
+      exit={{ width: '50px' }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="w-full h-full p-5">
+        <TbArrowBarRight size={25} onClick={handleCloseProductList} className="cursor-pointer" />
+        <div className="overflow-y-scroll">
+          {productList.map((product, index) => (
+            <div key={index} className="flex items-center mb-4">
+              {/* Numbered label */}
+              <div className="text-sm font-semibold mr-4">{index + 1}</div>
+
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-16 h-16 mr-4 rounded-2xl"
+              />
+              <div className="flex-grow">
+                <h4 className="text-lg font-semibold">{product.name}</h4>
+                <p className="text-sm text-gray-600">{product.category}</p>
+
+                {/* Miktar and İşlem Inputs */}
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <div>
+                    <label htmlFor={`quantity-${index}`} className="block text-sm font-semibold">Miktar</label>
+                    <input
+                      type="number"
+                      id={`quantity-${index}`}
+                      name={`quantity-${index}`}
+                      className="w-full p-2 border border-gray-300 rounded-md mt-1"
+                      min="1"
+                      defaultValue={1}
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor={`action-${index}`} className="block text-sm font-semibold">İşlem</label>
+                    <select
+                      id={`action-${index}`}
+                      name={`action-${index}`}
+                      className="w-full p-2 border border-gray-300 rounded-md mt-1 bg-white"
+                    >
+                      <option value="inbound">Atık</option>
+                      <option value="outbound">Giriş</option>
+                      <option value="outbound">Çıkış</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Date Picker and "Çıkart" Button */}
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="w-4/5">
+                    <label htmlFor={`date-${index}`} className="block text-sm font-semibold">SKT Tarihi</label>
+                    <input
+                      type="date"
+                      id={`date-${index}`}
+                      name={`date-${index}`}
+                      className="w-full p-2 border border-gray-300 rounded-md mt-1"
+                    />
+                  </div>
+                  <button
+                    onClick={() => handleRemoveProduct(index)}
+                    className="w-1/5 bg-red-500 text-white p-2 rounded-md ml-2"
+                  >
+                    Çıkart
+                  </button>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          ))}
+        </div>
+
+        {/* Complete Action Button */}
+        <div className="mt-4">
+          <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">
+            İşlemi Tamamla
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+
+
 
 
         {/* Tarih ve Saat */}

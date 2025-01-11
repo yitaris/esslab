@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useSupabase } from "../context/SupabaseContext";
-import { ubgida } from "../assets";
+import React from "react";
 
 export default function Fetchpanel() {
 

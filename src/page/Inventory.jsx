@@ -8,7 +8,6 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 import { FaPowerOff, FaBars } from "react-icons/fa";
 
-import Fetchpanel from "../fetch/fetchpanel";
 import Fetchrapor from "../fetch/Fetchrapor";
 import Fetchadd from "../fetch/Fetchadd";
 
@@ -126,7 +125,6 @@ const Inventory = () => {
           animate="visible"
           variants={contentVariants}
         >
-          {selectedCategory === "panel" && <Fetchpanel />}
           {selectedCategory === "rapor" && <Fetchrapor />}
           {selectedCategory === "ekle" && <Fetchadd />}
         </motion.div>

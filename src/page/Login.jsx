@@ -129,7 +129,7 @@ const Login = () => {
                                     />
                                     <button
                                         type="button"
-                                        className="absolute inset-y-5 right-10 p-2 text-gray-400"
+                                        className="absolute inset-y-7 right-10 p-2 text-gray-400"
                                         onClick={togglePasswordVisibility}
                                     >
                                         {passwordVisible ? <FaEyeSlash /> : <FaEye />}

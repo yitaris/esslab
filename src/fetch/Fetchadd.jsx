@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSupabase } from "../context/SupabaseContext";
+import { ubgida } from "../assets";
 
 import { IoTime, IoSearch } from "react-icons/io5";
 import { FaCalendarAlt,FaBorderAll } from "react-icons/fa";
@@ -72,6 +73,17 @@ export default function Fetchadd() {
     }
     setFilteredProducts(filtered);
   }, [selectedCategory, searchQuery, data]);
+
+  if (loading)
+    return (
+      <div className="absolute inset-0 grid place-content-center">
+        <img
+          src={ubgida}
+          alt="Loading..."
+          className="w-30 h-30 animate-pulse"
+        />
+      </div>
+    );
 
   return (
     <div className="w-full h-full p-5 lg:p-10">

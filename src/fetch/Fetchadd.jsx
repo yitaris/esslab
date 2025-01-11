@@ -8,6 +8,7 @@ import { PiHamburgerFill } from "react-icons/pi";
 import { LuCakeSlice } from "react-icons/lu";
 import { RiDrinksLine } from "react-icons/ri";
 import { TbArrowBarLeft, TbArrowBarRight } from "react-icons/tb";
+import { FaBottleDroplet } from "react-icons/fa6";
 
 export default function Fetchadd() {
   const [currentDate, setCurrentDate] = useState("");
@@ -206,6 +207,9 @@ export default function Fetchadd() {
               {index === 3 && (
                 <RiDrinksLine fill={`${selectedCategory === category.name ? "#789DBC" : "#D9EAFD"}`} size={30} />
               )}
+              {index === 4 && (
+                <FaBottleDroplet fill={`${selectedCategory === category.name ? "#72BF78" : "#A0D683"}`} size={30} />
+              )}
 
               <span className="font-bold text-sm lg:text-base">{category.name}</span>
               <span className="text-xs lg:text-sm">{category.count} Ürün Var</span>
@@ -262,7 +266,7 @@ export default function Fetchadd() {
 
               {/* Kategori ve Buton */}
               <div className="flex justify-between items-center">
-                <span className={`${item.category === "Sandviç" ? "text-orange-500" : item.category === "Tatlı" ? "text-[#800080]" : item.category === "İçecekler" ? "text-[#789dbc]" : ""} text-xs lg:text-sm font-semibold`}>
+                <span className={`${item.category === "Sandviç" ? "text-orange-500" : item.category === "Tatlı" ? "text-[#800080]" : item.category === "İçecekler" ? "text-[#789dbc]" : "text-[#72BF78]"} text-xs lg:text-sm font-semibold`}>
                   {item.category}
                 </span>
                 <button 

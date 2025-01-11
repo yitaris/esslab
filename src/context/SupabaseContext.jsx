@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabaseClient";
 export const USERS_TABLE = "users";
 export const INVENTORY_TABLE = "envanter";
 export const RAPOR = "raporlar";
+export const PRODUCT = "product";
 
 const SupabaseContext = createContext({});
 
@@ -80,6 +81,30 @@ export const SupabaseProvider = ({ children }) => {
     }
     setLoading(false);
   };
+
+  const fetchProduct = async () => {
+    setLoading(true);
+    try {
+      const { data: productData, error: productError } = await supabase
+        .from(PRODUCT)
+        .select("*");
+
+        if(productError){
+          alert(`hata: ${productError.message}`);
+        } else {
+          setData(productData);
+        }
+    }
+    catch (e) {
+      alert(`hata: ${e.message}`);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+
+
   // Veri Getirme Fonksiyonu
   const fetchExcelDatabase = async () => {
     setLoading(true);
@@ -210,13 +235,13 @@ export const SupabaseProvider = ({ children }) => {
         .storage
         .from(RAPOR)
         .download(filePath);
-  
-        if (downloadFileError) {
-          console.error('Upload error from Supabase:', downloadFileError.message);
-        } else {
-          console.log('Upload successful:', downloadFileData);
-        }
-  
+
+      if (downloadFileError) {
+        console.error('Upload error from Supabase:', downloadFileError.message);
+      } else {
+        console.log('Upload successful:', downloadFileData);
+      }
+
       const url = window.URL.createObjectURL(new Blob([data]));
       const link = document.createElement('a');
       link.href = url;
@@ -238,6 +263,7 @@ export const SupabaseProvider = ({ children }) => {
     publicUrlExcel,
     fetchFullInventory,
     fetchInventory,
+    fetchProduct,
     updateInventory,
     addInventory,
     fetchExcelDatabase,

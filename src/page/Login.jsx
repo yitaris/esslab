@@ -62,7 +62,7 @@ const Login = () => {
     }
 
     return (
-        <div className="bg-[#121212] w-full h-full  md:h-screen grid md:place-content-center relative p-10">
+        <div className="bg-[#121212] w-full h-full md:h-screen grid md:place-content-center relative p-10">
             <div className="w-full h-full grid md:grid-cols-2 gap-10">
                 <motion.div
                     initial={{ opacity: 0, translateY: -50 }}
@@ -71,8 +71,8 @@ const Login = () => {
                     className="flex flex-col items-center text-white"
                 >
                     <img src={ubgida} className="w-20 h-20" />
-                    <form onSubmit={handleLogin} className=" w-full h-full max-w-sm flex flex-col items-center justify-evenly">
-                        <motion.div 
+                    <form onSubmit={handleLogin} className="w-full h-full max-w-sm flex flex-col items-center justify-evenly">
+                        <motion.div
                             initial={{ opacity: 0, translateY: -50 }}
                             animate={{ opacity: 1, translateY: 0 }}
                             transition={{ duration: 1 }}
@@ -82,23 +82,24 @@ const Login = () => {
                             </h1>
                             <p className="mt-2 font-semibold text-[#aaa9a9d3]">AGORA AVM STOK</p>
                         </motion.div>
-                        
+
                         <div>
                             <motion.div
                                 initial={{ opacity: 0, translateY: -50 }}
                                 animate={{ opacity: 1, translateY: 0 }}
                                 transition={{ duration: 1 }}
-                                className="mb-4 w-[300px] flex justify-center mt-10">
+                                className="mb-4 w-[320px] flex justify-center mt-10">
                                 <div className="input flex flex-col w-fit static">
                                     <label
-                                        for="input"
-                                        className="text-gray-200 text-xs font-semibold relative top-2 ml-[7px] px-[3px] bg-[#121212] w-fit"
+                                        htmlFor="email"
+                                        className="text-gray-200 text-sm font-semibold relative top-2 ml-[7px] px-[3px] bg-[#121212] w-fit"
                                     >
                                         E-posta
                                     </label>
                                     <input
+                                        id="email"
                                         type="email"
-                                        className="border-[#aaa9a946] input px-[10px] py-[11px] text-xs bg-[#121212] border-2 rounded-[5px] w-[210px] focus:outline-none placeholder:text-black/25"
+                                        className="border-[#aaa9a946] px-4 py-3 text-sm bg-[#121212] border-2 rounded-md w-[240px] focus:outline-none placeholder:text-gray-400"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
@@ -110,24 +111,25 @@ const Login = () => {
                                 initial={{ opacity: 0, translateY: -50 }}
                                 animate={{ opacity: 1, translateY: 0 }}
                                 transition={{ duration: 1 }}
-                                className="mb-4 w-[300px] flex justify-center relative">
+                                className="mb-4 w-[320px] flex justify-center relative">
                                 <div className="input flex flex-col w-fit static">
                                     <label
-                                        for="input"
-                                        className="text-gray-200 text-xs font-semibold relative top-2 ml-[7px] px-[3px] bg-[#121212] w-fit"
+                                        htmlFor="password"
+                                        className="text-gray-200 text-sm font-semibold relative top-2 ml-[7px] px-[3px] bg-[#121212] w-fit"
                                     >
                                         Şifre
                                     </label>
                                     <input
+                                        id="password"
                                         type={passwordVisible ? "text" : "password"}
-                                        className="border-[#aaa9a946] input px-[10px] py-[11px] text-xs bg-[#121212] border-2 rounded-[5px] w-[210px] focus:outline-none placeholder:text-black/25"
+                                        className="border-[#aaa9a946] px-4 py-3 text-sm bg-[#121212] border-2 rounded-md w-[240px] focus:outline-none placeholder:text-gray-400"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
                                     />
                                     <button
                                         type="button"
-                                        className="absolute inset-y-5 right-12 p-2 text-gray-400"
+                                        className="absolute inset-y-5 right-10 p-2 text-gray-400"
                                         onClick={togglePasswordVisibility}
                                     >
                                         {passwordVisible ? <FaEyeSlash /> : <FaEye />}
@@ -135,15 +137,18 @@ const Login = () => {
                                 </div>
                             </motion.div>
                         </div>
+
                         {error && <p className="text-red-500 text-sm">{error}</p>}
+
                         <button
                             type="submit"
-                            className="w-[210px] p-2 mt-4 hover:bg-[#333131] text-white rounded-md transition duration-500"
+                            className="w-[240px] p-3 mt-4 hover:bg-[#333131] text-white rounded-md transition duration-500"
                         >
                             Giriş Yap
                         </button>
                     </form>
                 </motion.div>
+
                 <motion.div
                     initial={{ opacity: 0, translateY: 50 }}
                     animate={{ opacity: 1, translateY: 0 }}
@@ -163,4 +168,5 @@ const Login = () => {
         </div>
     );
 };
+
 export default Login;

@@ -103,6 +103,31 @@ export const SupabaseProvider = ({ children }) => {
     }
   }
 
+  const addProductToInventory = async (product) => {
+    setLoading(true);
+    try{
+      const { data, error } = await supabase
+      .from(INVENTORY_TABLE)
+      .insert([
+        {
+          productname: product.name,
+          image_url: product.image_url,
+          productcount: product.quantity,
+          aksiyon: product.action,
+          zaman: product.expiryDate,
+        }
+      ]);
+      if (error) {
+        console.error('Ürün kaydedilemedi:', error.message);
+      } else {
+        console.log('Ürün başarıyla kaydedildi:', data);
+      }
+    } catch (err) {
+      console.error('Hata:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
 
   // Veri Getirme Fonksiyonu
@@ -270,6 +295,7 @@ export const SupabaseProvider = ({ children }) => {
     saveAndStoreExcelReport,
     handleDrop,
     downloadFile,
+    addProductToInventory,
   };
 
   return (

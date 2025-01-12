@@ -7,7 +7,7 @@ import { FaCalendarAlt, FaBorderAll } from "react-icons/fa";
 import { PiHamburgerFill } from "react-icons/pi";
 import { LuCakeSlice } from "react-icons/lu";
 import { RiDrinksLine } from "react-icons/ri";
-import { TbArrowBarLeft, TbArrowBarRight } from "react-icons/tb";
+import { TbArrowBarLeft, TbArrowBarRight, TbCalendar } from "react-icons/tb";
 import { FaBottleDroplet } from "react-icons/fa6";
 
 export default function Fetchadd() {
@@ -18,16 +18,56 @@ export default function Fetchadd() {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
   const [searchQuery, setSearchQuery] = useState("");
   const [showContent, setShowContent] = useState(false);
-  const { data, loading, fetchProduct } = useSupabase();
+  const { data, loading, fetchProduct, addProductToInventory } = useSupabase();
   const [openProductList, setOpenProductList] = useState(false);
   const [productList, setProductList] = useState([]);
 
   const addProduct = (product) => {
+    console.log('addProduct çağrıldı:', product);
     setOpenProductList(true);
-    setProductList([...productList, product]);
+    setProductList((prevList) => {
+      const existingProduct = prevList.find((p) => p.id === product.id);
+      if (existingProduct) {
+        return prevList.map((p) =>
+          p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+        );
+      }
+      return [...prevList, { ...product, quantity: 1 }];
+    });
   };
-  const handleRemoveProduct = (index) => {
-    setProductList((prevList) => prevList.filter((_, i) => i !== index));
+
+  const handleRemoveProduct = (id) => {
+    setProductList((prevList) => {
+      const updatedList = prevList.map((product) =>
+        product.id === id ? { ...product, quantity: product.quantity - 1 } : product
+      ).filter((product) => product.quantity > 0);
+      return updatedList;
+    });
+  };
+
+  const handleQuantityChange = (id, newQuantity) => {
+    setProductList((prevList) => {
+      const updatedList = prevList.map((product) =>
+        product.id === id ? { ...product, quantity: newQuantity } : product
+      );
+      return updatedList;
+    });
+  };
+
+  const handleActionChange = (id, value) => {
+    setProductList((prevList) =>
+      prevList.map((product) =>
+        product.id === id ? { ...product, action: value } : product
+      )
+    );
+  };
+
+  const handleDateChange = (id, value) => {
+    setProductList((prevList) =>
+      prevList.map((product) =>
+        product.id === id ? { ...product, expiryDate: value } : product
+      )
+    );
   };
 
   // Tarih ve zaman ayarı
@@ -117,6 +157,23 @@ export default function Fetchadd() {
     setOpenProductList(false);
   }
 
+  const handleComplete = async () => {
+    try {
+      for (const product of productList) {
+        await addProductToInventory({
+          name: product.name,
+          image_url: product.image,
+          quantity: product.quantity,
+          action: product.action,
+          expiryDate: product.expiryDate,
+        });
+      }
+      alert('Ürünler kaydedildi!');
+    } catch (err) {
+      console.error('Ürünler kaydedilirken hata oluştu:', err);
+    }
+  };
+
   return (
     <motion.div
       initial="hidden"
@@ -132,83 +189,91 @@ export default function Fetchadd() {
         <AnimatePresence>
   {openProductList && (
     <motion.div
-      className="bg-white absolute h-full right-0 rounded-2xl overflow-y-scroll"
+      className="bg-white absolute h-full right-0 rounded-2xl shadow-lg z-100"
       initial={{ width: '50px' }}
-      animate={{ width: '350px' }}
+      animate={{ width: '400px' }}
       exit={{ width: '50px' }}
       transition={{ duration: 0.5 }}
     >
-      <div className="w-full h-full p-5">
-        <TbArrowBarRight size={25} onClick={handleCloseProductList} className="cursor-pointer" />
+      <div className="w-full h-full p-5 flex flex-col gap-5">
+        <TbArrowBarRight
+          size={30}
+          onClick={handleCloseProductList}
+          className="cursor-pointer text-gray-700 hover:text-gray-900 transition"
+        />
         <div className="overflow-y-scroll">
-          {productList.map((product, index) => (
-            <div key={index} className="flex items-center mb-4">
-              {/* Numbered label */}
-              <div className="text-sm font-semibold mr-4">{index + 1}</div>
-
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-16 h-16 mr-4 rounded-2xl"
-              />
-              <div className="flex-grow">
-                <h4 className="text-lg font-semibold">{product.name}</h4>
-                <p className="text-sm text-gray-600">{product.category}</p>
-
-                {/* Miktar and İşlem Inputs */}
-                <div className="mt-2 grid grid-cols-2 gap-2">
+          {productList.map((product) => (
+            <div key={product.id} className="grid grid-cols-1 sm:grid-cols-[1fr,2fr] gap-4 mb-4 bg-gray-100 p-4 rounded-lg shadow-sm">
+              <div className="flex justify-center">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-[100px] h-[100px] object-cover rounded-lg"
+                />
+              </div>
+              <div className="flex-grow relative">
+                <h4 className="text-lg font-semibold text-gray-800">{product.name}</h4>
+                <div className="mt-2 grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor={`quantity-${index}`} className="block text-sm font-semibold">Miktar</label>
+                    <label htmlFor={`quantity-${product.id}`} className="block text-sm font-semibold text-gray-600">Miktar</label>
                     <input
                       type="number"
-                      id={`quantity-${index}`}
-                      name={`quantity-${index}`}
+                      id={`quantity-${product.id}`}
+                      name={`quantity-${product.id}`}
                       className="w-full p-2 border border-gray-300 rounded-md mt-1"
                       min="1"
-                      defaultValue={1}
+                      value={product.quantity}
+                      onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value, 10))}
                     />
                   </div>
-
                   <div>
-                    <label htmlFor={`action-${index}`} className="block text-sm font-semibold">İşlem</label>
+                    <label htmlFor={`action-${product.id}`} className="block text-sm font-semibold text-gray-600">İşlem</label>
                     <select
-                      id={`action-${index}`}
-                      name={`action-${index}`}
+                      id={`action-${product.id}`}
+                      name={`action-${product.id}`}
                       className="w-full p-2 border border-gray-300 rounded-md mt-1 bg-white"
+                      onChange={(e) => handleActionChange(product.id, e.target.value)}
                     >
-                      <option value="inbound">Atık</option>
-                      <option value="outbound">Giriş</option>
-                      <option value="outbound">Çıkış</option>
+                      <option value="Acildi">Açıldı</option>
+                      <option value="Acilmadi">Açılmadı</option>
+                      <option value="Atik">Atık</option>
                     </select>
                   </div>
                 </div>
-
-                {/* Date Picker and "Çıkart" Button */}
                 <div className="mt-2 flex items-center justify-between">
-                  <div className="w-4/5">
-                    <label htmlFor={`date-${index}`} className="block text-sm font-semibold">SKT Tarihi</label>
-                    <input
-                      type="date"
-                      id={`date-${index}`}
-                      name={`date-${index}`}
-                      className="w-full p-2 border border-gray-300 rounded-md mt-1"
-                    />
+                  <div className="flex items-center w-4/5">
+                    <label className="block text-sm font-semibold text-gray-600 mr-2">SKT Tarihi</label>
+                    <div className="relative">
+                      <button
+                        onClick={() => document.getElementById(`date-${product.id}`).click()}
+                        className="p-2 rounded-lg bg-white hover:bg-gray-200 transition duration-500"
+                      >
+                        <TbCalendar size={20} className="text-gray-600" />
+                      </button>
+                      <input
+                        type="date"
+                        id={`date-${product.id}`}
+                        name={`date-${product.id}`}
+                        onChange={(e) => handleDateChange(product.id, e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-md mt-1 absolute top-0 left-0 opacity-0 cursor-pointer"
+                      />
+                    </div>
                   </div>
                   <button
-                    onClick={() => handleRemoveProduct(index)}
-                    className="w-1/5 bg-red-500 text-white p-2 rounded-md ml-2"
+                    onClick={() => handleRemoveProduct(product.id)}
+                    className="absolute right-0 top-0 h-[25px] w-[25px] flex items-center justify-center bg-white text-red text-xl font-semibold hover:text-white p-2 rounded-md ml-2 hover:bg-red-600 transition duration-500"
                   >
-                    Çıkart
+                    -
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Complete Action Button */}
         <div className="mt-4">
-          <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">
+          <button 
+            onClick={handleComplete}
+            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition font-bold">
             İşlemi Tamamla
           </button>
         </div>
@@ -340,10 +405,10 @@ export default function Fetchadd() {
                 <span className={`${item.category === "Sandviç" ? "text-orange-500" : item.category === "Tatlı" ? "text-[#800080]" : item.category === "İçecekler" ? "text-[#789dbc]" : "text-[#72BF78]"} text-xs lg:text-sm font-semibold`}>
                   {item.category}
                 </span>
-                <button 
-                 className="text-lg mr-2"
-                 onClick={() => addProduct({ name:item.name, image:item.image_url, category:item.category})}>
-                +
+                <button
+                  className="text-lg mr-2"
+                  onClick={() => addProduct({ id: item.id, name: item.name, image: item.image_url, category: item.category })}>
+                  +
                 </button>
               </div>
             </motion.div>

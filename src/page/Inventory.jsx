@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "../lib/supabaseClient";
-import { esslablogodark, ubgida } from "../assets";
+import { ubgida } from "../assets";
 import { LuPanelsLeftBottom } from "react-icons/lu";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
@@ -10,6 +10,7 @@ import { FaPowerOff, FaBars } from "react-icons/fa";
 
 import Fetchrapor from "../fetch/Fetchrapor";
 import Fetchadd from "../fetch/Fetchadd";
+import Fetchpanel from "../fetch/Fetchpanel";
 
 const Inventory = () => {
   const navigate = useNavigate();
@@ -29,7 +30,6 @@ const Inventory = () => {
   const categories = [
     { icon: <LuPanelsLeftBottom size={25} />, text: "Panel", category: "panel" },
     { icon: <RiFileExcel2Line size={25} />, text: "Rapor", category: "rapor" },
-    { icon: <RiFileExcel2Line size={25} />, text: "SKT", category: "skt" },
     { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
     { icon: <FaPowerOff size={25} />, text: "Çıkış", category: "logout" },
   ];
@@ -50,10 +50,10 @@ const Inventory = () => {
   };
 
   return (
-    <div className="w-full h-full relative bg-[#121212] text-black">
+    <div className="w-full h-full relative bg-[#09090b] text-black">
       {/* Header */}
       <motion.div
-        className="w-full flex justify-between items-center bg-[#121212] p-4 lg:hidden"
+        className="w-full flex justify-between items-center bg-[#09090b] p-4 lg:hidden"
         initial="hidden"
         animate="visible"
         variants={logoVariants}
@@ -66,7 +66,7 @@ const Inventory = () => {
 
       {/* Dropdown Menu */}
       {menuOpen && (
-        <div className="absolute top-16 left-0 w-full bg-[#121212] z-10">
+        <div className="absolute top-20 left-0 w-full bg-[#09090b] z-10">
           <div className="flex flex-col items-center py-5 space-y-4">
             {categories.map((item, index) => (
               <button
@@ -96,7 +96,7 @@ const Inventory = () => {
           variants={sidebarVariants}
         >
           <img src={ubgida} className="w-20 absolute top-5 left-4 hidden lg:block" />
-          <div className="w-full bg-[#aaa9a946] rounded-tr-2xl rounded-br-2xl relative group transition-all duration-300">
+          <div className="w-full bg-[#18181b] rounded-tr-2xl rounded-br-2xl relative group transition-all duration-300">
             <div className="flex flex-col items-center py-5 space-y-4">
               {categories.map((item, index) => (
                 <button
@@ -107,7 +107,7 @@ const Inventory = () => {
                   }
                 >
                   <div
-                    className="hover:bg-[#121212] rounded-xl p-2 transition-all duration-300 transform hover:scale-105"
+                    className="hover:bg-[#09090b] rounded-xl p-2 transition-all duration-300 transform hover:scale-105"
                     style={{ transitionTimingFunction: "ease-in-out" }}
                   >
                     {item.icon}
@@ -123,8 +123,8 @@ const Inventory = () => {
           className="h-screen"
           initial="hidden"
           animate="visible"
-          variants={contentVariants}
         >
+          {selectedCategory === "panel" && <Fetchpanel />}
           {selectedCategory === "rapor" && <Fetchrapor />}
           {selectedCategory === "ekle" && <Fetchadd />}
         </motion.div>

@@ -14,6 +14,7 @@ export function useSupabase() {
 
 export const SupabaseProvider = ({ children }) => {
   const [data, setData] = useState([]);
+  const [inventoryData, setInventoryData] = useState([]);
   const { publicUrlExcel, setPublicUrlExcel } = useState("")
   const [excelDataPublic, setExcelDataPublic] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,16 +22,21 @@ export const SupabaseProvider = ({ children }) => {
   // Tüm Envanteri Çek
   const fetchFullInventory = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    try{
+      const { data: inventoryData, error:inventoryError } = await supabase
       .from(INVENTORY_TABLE)
       .select("*")
 
-    if (error) {
-      console.error("Full Envanter çekme hatası:", error.message);
-    } else {
-      setData(data);
+      if(inventoryError){
+        alert(`hata: ${productError.message}`);
+      } else {
+        setInventoryData(inventoryData);
+      }
+    }catch (e) {
+      console.log("inventory ERROR:",e);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // Veri çekme fonksiyonu
@@ -283,6 +289,7 @@ export const SupabaseProvider = ({ children }) => {
 
   const value = {
     data,
+    inventoryData,
     excelDataPublic,
     loading,
     publicUrlExcel,

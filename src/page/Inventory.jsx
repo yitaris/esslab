@@ -8,6 +8,7 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 import { FaPowerOff, FaBars } from "react-icons/fa";
 
+/* sayfalar */
 import Fetchrapor from "../fetch/Fetchrapor";
 import Fetchadd from "../fetch/Fetchadd";
 import Fetchpanel from "../fetch/Fetchpanel";

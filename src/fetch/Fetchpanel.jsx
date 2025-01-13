@@ -4,12 +4,12 @@ import { IoSearch } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { ubgida } from "../assets";
 
+
 export default function Fetchpanel() {
   const { inventoryData, fetchFullInventory } = useSupabase();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true); // Veri yükleniyor kontrolü
-  const [error, setError] = useState(null); // Hata durumunu yönetmek için
 
   const fadeInVariant = {
     hidden: { opacity: 0, y: 50 },
@@ -23,7 +23,6 @@ export default function Fetchpanel() {
         setLoading(false); // Yükleme tamamlandığında loading false yap
       } catch (err) {
         console.error("Veri alma hatası:", err);
-        setError("Veri yüklenemedi"); // Hata durumunu ayarla
         setLoading(false); // Yükleme tamamlanmış sayılır
       }
     };
@@ -134,6 +133,8 @@ export default function Fetchpanel() {
               </div>
             )}
           </div>
+        </div>
+        <div className="w-full">
         </div>
       </motion.div>
     </motion.div>

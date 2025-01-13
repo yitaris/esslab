@@ -4,7 +4,6 @@ import Login from "./page/Login";
 import Inventory from "./page/Inventory";
 import Register from "./page/Register";
 
-
 const App = () => {
     return (
         <Router>

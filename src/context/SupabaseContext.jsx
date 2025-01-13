@@ -40,19 +40,24 @@ export const SupabaseProvider = ({ children }) => {
   };
 
   // Veri çekme fonksiyonu
-  const fetchInventory = async (category) => {
+  const deleteInventory = async (id) => {
     setLoading(true);
-    const { data, error } = await supabase
+    try {
+    const { data: inventoryData, error:inventoryError } = await supabase
       .from(INVENTORY_TABLE)
-      .select("*")
-      .eq("category", category);
+      .delete("*")
+      .eq("id",id)
 
-    if (error) {
-      console.error("Envanter çekme hatası:", error.message);
+    if (inventoryError) {
+      console.error("Envanter çekme hatası:", inventoryError.message);
     } else {
-      setData(data);
+      setInventoryData(inventoryData);
     }
+  } catch (e) {
+    console.log("inventory ERROR:",e);
+  } finally {
     setLoading(false);
+  }
   };
 
   // Envanter güncelleme fonksiyonu
@@ -294,7 +299,7 @@ export const SupabaseProvider = ({ children }) => {
     loading,
     publicUrlExcel,
     fetchFullInventory,
-    fetchInventory,
+    deleteInventory,
     fetchProduct,
     updateInventory,
     addInventory,

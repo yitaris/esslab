@@ -30,14 +30,19 @@ export default function Fetchpanel() {
   }, [fetchFullInventory]);
 
   useEffect(() => {
-    // `data` geldiğinde filtreleme işlemini yap
     if (inventoryData) {
-      console.log("Veri geldi:", inventoryData); // Burada veriyi konsola yazdırıyoruz
-      setFilteredData(
-        inventoryData.filter((product) =>
-          product.productname.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
+      const filteredAndSortedData = inventoryData
+        .filter((product) => {
+          const remainingTime = calculateRemainingTime(product.zaman);
+          // Sadece süresi 5 gün veya daha az olanları filtrele
+          return (
+            remainingTime !== "Süre doldu" &&
+            new Date(product.zaman) - new Date() <= 5 * 24 * 60 * 60 * 1000
+          );
+        })
+        .sort((a, b) => new Date(a.zaman) - new Date(b.zaman)); // Süresi dolmuşlardan başlayarak sırala
+      
+      setFilteredData(filteredAndSortedData);
     }
   }, [searchQuery, inventoryData]);
 
@@ -45,22 +50,16 @@ export default function Fetchpanel() {
     const now = new Date();
     const futureDate = new Date(timestamp);
     const difference = futureDate - now;
-
+  
     if (difference <= 0) {
       return "Süre doldu";
     }
-
+  
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const weeks = Math.floor(days / 7);
-    const months = Math.floor(days / 30);
-
-    if (months > 0) {
-      return `${months} ay kaldı`;
-    } else if (weeks > 0) {
-      return `${weeks} hafta kaldı`;
-    } else {
-      return `${days} gün kaldı`;
+    if (days === 0) {
+      return "Bugün son";
     }
+    return `${days} gün kaldı`;
   };
 
   if (loading) {
@@ -84,8 +83,12 @@ export default function Fetchpanel() {
     >
       <motion.div
         variants={fadeInVariant}
-        className="bg-[#fbfbfbf5] relative w-full h-full rounded-lg lg:rounded-2xl p-5 grid gap-5 grid-rows-[auto,1fr]"
+        className="bg-[#fbfbfbf5] relative w-full h-full rounded-lg lg:rounded-2xl p-5 grid gap-5 grid-rows-2"
       >
+        <div className="w-full h-full bg-white rounded-2xl p-5">
+          1
+        </div>
+
         <div className="bg-white p-5 rounded-2xl relative flex flex-col h-full">
           <h1 className="font-bold mb-2">SKT YAKLAŞAN ÜRÜNLER</h1>
 
@@ -102,29 +105,19 @@ export default function Fetchpanel() {
           </div>
 
           {/* Carousel Container */}
-          <div className="overflow-x-auto flex space-x-4 snap-x snap-mandatory h-full">
+          <div className="overflow-y-scroll grid gap-5 w-full h-full">
             {filteredData.length > 0 ? (
               filteredData.map((product) => (
                 <div
                   key={product.id}
-                  className="min-w-full flex-shrink-0 rounded-lg flex flex-col items-center snap-center p-3"
+                  className="w-full h-full rounded-lg flex flex-row gap-5 border-b py-5"
                 >
-                  <div className="flex flex-col items-center justify-between p-3 rounded-lg">
-                    <img
-                      src={product.image_url}
-                      className="w-[130px] h-[130px] object-cover mb-2 rounded-lg"
-                      alt={product.productname}
-                    />
-                    <span className="w-full text-center mt-2 p-1 rounded-lg text-black font-bold">
-                      {product.productname}
-                    </span>
-                    <div className="text-center">
-                      <h3 className="text-white font-bold">Kalan Zaman</h3>
-                      <span className="bg-purple-500 text-white p-3 rounded-lg">
-                        {calculateRemainingTime(product.zaman)}
-                      </span>
-                    </div>
-                  </div>
+                  <img src={product.image_url}
+                       className="w-24 h-24 rounded-2xl object-cover"
+                  />
+                  <span className="font-bold">{product.productname}</span>
+                  <span className="font-bold">Miktar: {product.productcount}</span>
+                  <span className="font-bold">{calculateRemainingTime(product.zaman)}</span>
                 </div>
               ))
             ) : (
@@ -133,8 +126,6 @@ export default function Fetchpanel() {
               </div>
             )}
           </div>
-        </div>
-        <div className="w-full">
         </div>
       </motion.div>
     </motion.div>

@@ -43,9 +43,14 @@ export default function Fetchpanel() {
       const filteredAndSortedData = inventoryData
         .filter((product) => {
           const remainingTime = calculateRemainingTime(product.zaman);
+          const matchesSearchQuery = searchQuery
+            ? product.productname.toLowerCase().includes(searchQuery.toLowerCase())
+            : true;
+
           return (
             remainingTime !== "Süre doldu" &&
-            new Date(product.zaman) - new Date() <= 5 * 24 * 60 * 60 * 1000
+            new Date(product.zaman) - new Date() <= 5 * 24 * 60 * 60 * 1000 &&
+            matchesSearchQuery
           );
         })
         .sort((a, b) => new Date(a.zaman) - new Date(b.zaman));
@@ -132,72 +137,101 @@ export default function Fetchpanel() {
           {notification}
         </motion.div>
       )}
+
       <motion.div
         variants={fadeInVariant}
-        className="bg-[#fbfbfbf5] relative w-full h-full rounded-lg lg:rounded-2xl p-5 grid gap-5 grid-rows-[30%,70%]"
+        className="bg-[#fbfbfbf5] relative w-full h-full lg:p-5 grid gap-5 grid-cols-12 md:grid-rows-12 auto-rows-[300px] lg:rounded-2xl"
       >
-        <div className="w-full h-full bg-white rounded-2xl p-5 font-bold text-lg">
-          KAMPÜS ESPRESSOLAB İHTİYAÇ
+        <div className="w-full bg-white lg:rounded-2xl rounded-b-2xl p-5 font-bold text-lg col-span-12 md:row-span-4">
+          <h1 className="font-bold mb-2 text-lg">KAMPÜS ESPRESSOLAB İHTİYAÇ</h1>
+          <div>
+            <span className="text-gray-500 font-normal">Ürün bulunamadı</span>
+          </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl relative flex flex-col h-full">
-          <h1 className="font-bold mb-2 text-lg">SKT YAKLAŞAN ÜRÜNLER</h1>
-
+        <div className="bg-white p-6 rounded-2xl flex flex-col w-full col-span-12 md:col-span-5 lg:col-span-4 md:row-span-8">
+          <h1 className="font-bold mb-4 text-xl text-gray-800">SKT YAKLAŞAN ÜRÜNLER</h1>
           {/* Search Bar */}
-          <div className="bg-gray-100 rounded-full flex items-center p-2">
-            <IoSearch size={20} className="text-gray-600" />
+          <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 mb-6 shadow-sm">
+            <IoSearch size={20} className="text-gray-500" />
             <input
               type="text"
               placeholder="Ürün ara..."
-              className="bg-transparent focus:outline-none px-2 py-1 w-full text-sm"
+              className="bg-transparent focus:outline-none px-3 py-1 w-full text-sm text-gray-700"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
           {/* Carousel Container */}
-          <div className="overflow-y-scroll grid gap-5 w-full h-full">
+          <div className="overflow-y-auto max-h-[400px] divide-y divide-gray-200">
             {filteredData.length > 0 ? (
               filteredData.map((product) => (
                 <div
                   key={product.id}
-                  className="w-full h-full rounded-lg flex flex-row gap-5 border-b py-5 items-center justify-between"
-                >
-                  <div className="flex flex-col items-center">
-                    <span className="font-bold text-gray-500">Ürün</span>
-                    <img src={product.image_url} className="w-24 h-24 rounded-2xl object-cover" />
+                  className="flex items-center gap-4 py-4">
+                  <img
+                    src={product.image_url}
+                    alt="product"
+                    className="w-20 h-20 rounded-lg object-cover shadow-sm"
+                  />
+
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800 text-sm">{product.productname}</p>
+                    <p className="text-gray-500 text-xs">Miktar: <span className="font-medium">{product.productcount}</span></p>
+                    <p className="text-gray-500 text-xs">Kalan Süre: <span className={`font-medium ${calculateRemainingTime(product.zaman).style}`}>{calculateRemainingTime(product.zaman).text}</span></p>
                   </div>
-                  <div className="flex flex-col justify-between">
-                    <div>
-                      <span className="font-bold text-gray-500">İsim</span>
-                      <span className="font-bold block">{product.productname}</span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-gray-500">Miktar</span>
-                      <span className="font-bold block">{product.productcount}</span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-gray-500">Kalan Süre</span>
-                      <span className={`font-bold block ${calculateRemainingTime(product.zaman).style}`}>
-                        {calculateRemainingTime(product.zaman).text}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="h-full">
-                    <button
-                      onClick={() => handleDeleteClick(product)}
-                      className="w-[30px] h-[30px] text-center items-center justify-center flex bg-red-400 rounded-md text-xl font-semibold hover:bg-red-600 text-white transition duration-500"
-                    >
-                      -
-                    </button>
-                  </div>
+
+                  <button
+                    onClick={() => handleDeleteClick(product)}
+                    className="w-6 h-6 flex self-start items-center justify-center bg-red-500 text-white rounded-lg text-2xl shadow-md hover:bg-red-600 transition">
+                    -
+                  </button>
                 </div>
               ))
             ) : (
-              <div className="w-full text-center font-bold text-gray-500  flex items-center justify-center">
+              <div className="text-center py-10 text-gray-500 font-medium">
                 Ürün bulunamadı
               </div>
             )}
+          </div>
+        </div>
+
+
+        <div className="bg-white p-5 rounded-2xl col-span-12 md:col-span-7 lg:col-span-8 md:row-span-8 flex flex-col">
+          <h1 className="font-bold mb-2 text-lg">İŞLEMLER</h1>
+          <div className="h-full">
+            <div className="grid grid-cols-4 font-bold border-b pb-2">
+              <h2>Ürün</h2>
+              <h2>Adet</h2>
+              <h2>İşlem</h2>
+              <h2>Zaman</h2>
+            </div>
+            <div className="h-full">
+              {inventoryData.length > 0 ? (
+                inventoryData.map((product) => (
+                  <div className="grid grid-cols-4 py-2 border-b">
+                    <h3>{product.productname}</h3>
+                    <h3>{product.productcount}</h3>
+                    <h3>{product.aksiyon}</h3>
+                    <h3>
+                      {new Date(product.created_time).toLocaleString("tr-TR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      })}
+                    </h3>
+                  </div>
+                ))
+              ) : (
+                <div className="w-full text-center font-bold text-gray-500 flex items-center justify-center">
+                  Ürün bulunamadı
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </motion.div>
@@ -210,7 +244,10 @@ export default function Fetchpanel() {
             setOtp(["", "", "", ""]);
           }}
         >
-          <div className="bg-white p-10 rounded-lg flex flex-col" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="bg-white p-10 rounded-lg flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h2 className="font-bold text-xl mb-4">Şifrenizi Onaylayın!</h2>
             <div className="flex justify-center gap-2 mb-4">
               {otp.map((value, index) => (

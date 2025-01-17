@@ -109,6 +109,8 @@ export default function Fetchadd() {
       alert('Ürünler kaydedildi!');
     } catch (err) {
       console.error('Ürünler kaydedilirken hata oluştu:', err);
+    } finally {
+      setProductList([])
     }
   };
 
@@ -186,8 +188,9 @@ export default function Fetchadd() {
                               className="w-full p-2 border border-gray-300 rounded-md mt-1 bg-white"
                               onChange={(e) => handleActionChange(product.id, e.target.value, setProductList)}
                             >
-                              <option value="Acildi">Açıldı</option>
-                              <option value="Acilmadi">Açılmadı</option>
+                              <option value="İşlem">İşlem</option>
+                              <option value="Gelen">Gelen</option>
+                              <option value="Kapanis">Kapanış</option>
                               <option value="Atik">Atık</option>
                             </select>
                           </div>

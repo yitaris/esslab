@@ -291,6 +291,22 @@ export const SupabaseProvider = ({ children }) => {
     }
   };
 
+  const saveData = async (selectedDate,tableData,currentData) => {
+    const key = `${selectedDate.month}-${selectedDate.day}`;
+
+    // Supabase'e verileri kaydet
+    const { data, error } = await supabase.from("raporlar").upsert({
+        date_key: key,
+        table_data: currentData,
+    });
+
+    if (error) {
+        console.error("Veri kaydedilemedi:", error.message);
+    } else {
+        console.log("Veri başarıyla kaydedildi:", data);
+        
+    }
+};
 
   const value = {
     data,
@@ -308,6 +324,7 @@ export const SupabaseProvider = ({ children }) => {
     handleDrop,
     downloadFile,
     addProductToInventory,
+    saveData,
   };
 
   return (

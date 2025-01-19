@@ -46,15 +46,19 @@ export default function Fetchpanel() {
           const matchesSearchQuery = searchQuery
             ? product.productname.toLowerCase().includes(searchQuery.toLowerCase())
             : true;
-
+  
+          // Aksiyon = "gelen" olanları filtreleme
+          const matchesAction = product.aksiyon === "Gelen";
+  
           return (
             remainingTime !== "Süre doldu" &&
             new Date(product.zaman) - new Date() <= 5 * 24 * 60 * 60 * 1000 &&
-            matchesSearchQuery
+            matchesSearchQuery &&
+            matchesAction
           );
         })
         .sort((a, b) => new Date(a.zaman) - new Date(b.zaman));
-
+  
       setFilteredData(filteredAndSortedData);
     }
   }, [searchQuery, inventoryData]);

@@ -190,8 +190,12 @@ export default function Fetchadd() {
                             >
                               <option value="İşlem">İşlem</option>
                               <option value="Gelen">Gelen</option>
-                              <option value="Kapanis">Kapanış</option>
-                              <option value="Atik">Atık</option>
+                              <option value="Tadım">Tadım</option>
+                              <option value="Atık">Atık</option>
+                              <option value="Satış">Satış</option>
+                              <option value="Kapanış">Kapanış</option>
+                              <option value="Fark">Fark</option>
+                              <option value="Personel">Personel</option>
                             </select>
                           </div>
                         </div>

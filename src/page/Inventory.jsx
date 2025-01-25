@@ -7,6 +7,7 @@ import { LuPanelsLeftBottom } from "react-icons/lu";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
 import { FaPowerOff, FaBars } from "react-icons/fa";
+import { UserAuth } from "../context/SupabaseContext";
 
 /* sayfalar */
 import Fetchrapor from "../fetch/Fetchrapor";
@@ -14,13 +15,20 @@ import Fetchadd from "../fetch/Fetchadd";
 import Fetchpanel from "../fetch/Fetchpanel";
 
 const Inventory = () => {
+  const { user, session, signOut } = UserAuth();
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState("panel");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+  const handleSignOut = async (e) => {
+    e.preventDefault();
+
+    try {
+      await signOut();
+      navigate("/");
+    } catch (err) {
+      setError("An unexpected error occurred."); // Catch unexpected errors
+    }
   };
 
   const handleCategoryClick = (category) => {
@@ -29,7 +37,7 @@ const Inventory = () => {
   };
 
   const categories = [
-    { icon: <LuPanelsLeftBottom size={25} />, text: "Panel", category: "panel" },
+    { icon: <LuPanelsLeftBottom size={25} />, text: `${user.title}`, category: "panel" },
     { icon: <RiFileExcel2Line size={25} />, text: "Rapor", category: "rapor" },
     { icon: <IoMdAdd size={25} />, text: "Ekle", category: "ekle" },
     { icon: <FaPowerOff size={25} />, text: "Çıkış", category: "logout" },
@@ -74,7 +82,7 @@ const Inventory = () => {
                 key={index}
                 className="w-full text-white px-4 py-2 rounded-lg transition-all duration-300"
                 onClick={() =>
-                  index === 4 ? handleLogout() : handleCategoryClick(item.category)
+                  item.category === "logout" ? handleSignOut() : handleCategoryClick()
                 }
               >
                 <div className="flex items-center hover:bg-[#333] rounded-lg p-2 transition-all duration-300">
@@ -103,9 +111,7 @@ const Inventory = () => {
                 <button
                   key={index}
                   className="grid grid-cols-[42px,1fr] items-center w-full text-white px-4 py-2 rounded-lg transition-all duration-300"
-                  onClick={() =>
-                    index === 4 ? handleLogout() : handleCategoryClick(item.category)
-                  }
+                  onClick={handleSignOut}
                 >
                   <div
                     className="hover:bg-[#09090b] rounded-xl p-2 transition-all duration-300 transform hover:scale-105"

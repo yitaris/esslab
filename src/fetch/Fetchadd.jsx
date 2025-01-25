@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useSupabase } from "../context/SupabaseContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoSearch } from "react-icons/io5";
 import { FaBorderAll } from "react-icons/fa";

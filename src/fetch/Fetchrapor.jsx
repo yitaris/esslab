@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { supabase } from "../lib/supabaseClient";
-import { useSupabase } from "../context/SupabaseContext";
 import { categories } from "../constants";
 
 Modal.setAppElement("#root");

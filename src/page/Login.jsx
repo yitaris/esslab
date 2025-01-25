@@ -1,65 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { esslabicon, ubgida, ubvideo } from "../assets";
+import { ubgida, ubvideo } from "../assets";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "../lib/supabaseClient";
+import { Link, useNavigate } from "react-router-dom";
+import { UserAuth } from "../context/SupabaseContext";
 
-const Login = () => {
-    const [passwordVisible, setPasswordVisible] = useState(false);
+const Login = ({}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordVisible, setPasswordVisible] = useState(false);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+
+    const { user, signInUser } = UserAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const checkSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                navigate("/inventory");
-            } else {
-                setLoading(false);
-            }
-        };
-        checkSession();
-    }, [navigate]);
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+        const { session, error } = await signInUser(email, password); // Use your signIn function
+    
+        if (error) {
+          setError(error); // Set the error message if sign-in fails
+    
+          // Set a timeout to clear the error message after a specific duration (e.g., 3 seconds)
+          setTimeout(() => {
+            setError("");
+          }, 3000); // 3000 milliseconds = 3 seconds
+        } else {
+          // Redirect or perform any necessary actions after successful sign-in
+          navigate(`/dashboard`);
+        }
+    
+        if (session) {
+          closeModal();
+          setError(""); // Reset the error when there's a session
+        }
+      };
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
     };
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setError(null);
-
-        try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
-            if (error) throw error;
-
-            navigate("/inventory");
-        } catch (error) {
-            setError("Giriş başarısız: " + error.message);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="h-screen flex items-center justify-center bg-white">
-                <motion.img
-                    src={ubgida}
-                    alt="Logo"
-                    className="w-[200px] h-[200px]"
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ repeat: Infinity, duration: 3 }}
-                />
-            </div>
-        );
-    }
+    
 
     return (
         <div className="bg-[#121212] w-full h-full md:h-screen grid md:place-content-center relative p-10">
@@ -70,17 +51,17 @@ const Login = () => {
                     transition={{ duration: 1 }}
                     className="flex flex-col items-center text-white"
                 >
-                    <img src={ubgida} className="w-20 h-20" />
-                    <form onSubmit={handleLogin} className="w-full h-full max-w-sm flex flex-col items-center justify-evenly">
+                    <img src={ubgida} className="w-[150px] h-[150px]" />
+                    <form  onSubmit={handleSignIn} className="w-full h-full max-w-sm flex flex-col items-center justify-evenly">
                         <motion.div
                             initial={{ opacity: 0, translateY: -50 }}
                             animate={{ opacity: 1, translateY: 0 }}
                             transition={{ duration: 1 }}
                             className="flex flex-col items-center">
                             <h1 className="text-3xl font-semibold mt-10">
-                                ESSPRESSO<span className="text-red">LAB</span>
+                                ESPRESSO<span className="text-red">LAB</span>
                             </h1>
-                            <p className="mt-2 font-semibold text-[#aaa9a9d3]">AGORA AVM STOK</p>
+                            <p className="mt-2 font-semibold text-[#aaa9a9d3]"></p>
                         </motion.div>
 
                         <div>

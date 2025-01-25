@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSupabase } from "../context/SupabaseContext";
 import { IoSearch } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { ubgida } from "../assets";

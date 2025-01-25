@@ -1,28 +1,20 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./page/Login";
-import Inventory from "./page/Inventory";
-import Register from "./page/Register";
+import { useContext, useState } from "react";
 
-const App = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route
-                    path="/" 
-                    element={<Login />} 
-                />
-                <Route 
-                    path="/register"
-                    element={<Register />} 
-                />
-                <Route
-                    path="/inventory"
-                    element={<Inventory />}
-                />
-            </Routes>
-        </Router>
-    );
-};
+import { Link } from "react-router-dom";
+import Login from "./page/Login";
+
+import { UserAuth } from "./context/SupabaseContext";
+
+function App() {
+  const { user } = UserAuth();
+
+  // console.log(user);
+
+  return (
+    <>
+      <Login />
+    </>
+  );
+}
 
 export default App;

@@ -1,335 +1,258 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
-export const USERS_TABLE = "users";
-export const INVENTORY_TABLE = "envanter";
-export const RAPOR = "raporlar";
-export const PRODUCT = "product";
+const AuthContext = createContext();
 
-const SupabaseContext = createContext({});
-
-export function useSupabase() {
-  return useContext(SupabaseContext);
-}
-
-export const SupabaseProvider = ({ children }) => {
-  const [data, setData] = useState([]);
-  const [inventoryData, setInventoryData] = useState([]);
-  const { publicUrlExcel, setPublicUrlExcel } = useState("")
-  const [excelDataPublic, setExcelDataPublic] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // Tüm Envanteri Çek
-  const fetchFullInventory = async () => {
-    setLoading(true);
-    try{
-      const { data: inventoryData, error:inventoryError } = await supabase
-      .from(INVENTORY_TABLE)
-      .select("*")
-
-      if(inventoryError){
-        alert(`hata: ${productError.message}`);
-      } else {
-        setInventoryData(inventoryData);
-      }
-    }catch (e) {
-      console.log("inventory ERROR:",e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Veri çekme fonksiyonu
-  const deleteInventory = async (id) => {
-    setLoading(true);
+export const AuthContextProvider = ({ children }) => {
+  const [session, setSession] = useState(undefined);
+  const [user, setUser] = useState([]);
+  // Sign in
+  const signInUser = async (email, password) => {
     try {
-    const { data: inventoryData, error:inventoryError } = await supabase
-      .from(INVENTORY_TABLE)
-      .delete("*")
-      .eq("id",id)
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.toLowerCase(),
+        password: password,
+      });
 
-    if (inventoryError) {
-      console.error("Envanter çekme hatası:", inventoryError.message);
-    } else {
-      setInventoryData(inventoryData);
-    }
-  } catch (e) {
-    console.log("inventory ERROR:",e);
-  } finally {
-    setLoading(false);
-  }
-  };
-
-  // Envanter güncelleme fonksiyonu
-  const updateInventory = async (id, updates) => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from(INVENTORY_TABLE)
-      .update(updates)
-      .eq("id", id);
-
-    if (error) {
-      console.error("Envanter güncelleme hatası:", error.message);
-    } else {
-      console.log("Envanter güncellendi:", data);
-    }
-    setLoading(false);
-  };
-
-  // Add Inventory
-  const addInventory = async (newItem) => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from(INVENTORY_TABLE)
-      .insert([{ ...newItem, zaman: new Date() }]);
-
-    if (error) {
-      console.error("Envanter ekleme hatası:", error.message);
-      alert(`Hata: ${error.message}`);
-    } else {
-      console.log("Yeni envanter eklendi:", data);
-      await fetchFullInventory(); // Envanteri yeniden yükle
-    }
-    setLoading(false);
-  };
-
-  const fetchProduct = async () => {
-    setLoading(true);
-    try {
-      const { data: productData, error: productError } = await supabase
-        .from(PRODUCT)
-        .select("*");
-
-        if(productError){
-          alert(`hata: ${productError.message}`);
-        } else {
-          setData(productData);
-        }
-    }
-    catch (e) {
-      alert(`hata: ${e.message}`);
-    }
-    finally {
-      setLoading(false);
-    }
-  }
-
-  const addProductToInventory = async (product) => {
-    setLoading(true);
-    try{
-      const { data, error } = await supabase
-      .from(INVENTORY_TABLE)
-      .insert([
-        {
-          productname: product.name,
-          image_url: product.image_url,
-          productcount: product.quantity,
-          aksiyon: product.action,
-          zaman: product.expiryDate,
-        }
-      ]);
+      // Handle Supabase error explicitly
       if (error) {
-        console.error('Ürün kaydedilemedi:', error.message);
-      } else {
-        console.log('Ürün başarıyla kaydedildi:', data);
+        console.error("Sign-in error:", error.message); // Log the error for debugging
+        return { success: false, error: error.message }; // Return the error
       }
-    } catch (err) {
-      console.error('Hata:', err);
-    } finally {
-      setLoading(false);
+
+      // Kullanıcı oturum açtı, user bilgilerini getir
+      await fetchUserDetails(data.user.id);
+
+      return { success: true, data }; // Return the user data
+    } catch (error) {
+      // Handle unexpected issues
+      console.error("Unexpected error during sign-in:", err.message);
+      return {
+        success: false,
+        error: "An unexpected error occurred. Please try again.",
+      };
     }
-  }
-
-
-  // Veri Getirme Fonksiyonu
-  const fetchExcelDatabase = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from(RAPOR)
-      .select("*")
-
-    if (error) {
-      console.error("Raporlar tablosundan veri çekilirken hata:", error.message);
-    } else {
-      console.log("Çekilen raporlar:", data);
-      setExcelDataPublic(data); // Verileri state'e ata
-    }
-    setLoading(false);
   };
 
-  const saveAndStoreExcelReport = async (filename, bufferExcel) => {
-    setLoading(true);
-
+  // Kullanıcı bilgilerini Supabase'den al ve state'e kaydet
+  const fetchUserDetails = async (userId) => {
     try {
-      // Excel dosyasını Supabase Storage'a yükle
-      const { data: uploadData, error: uploadError } = await supabase
-        .storage
-        .from(RAPOR)
-        .upload(`raporlar/${filename}`, bufferExcel, {
-          contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        });
+      const { data, error } = await supabase
+        .from("users") // `users` tablosu
+        .select("branch_id, name, title, branch_name") // İlgili sütunları seçiyoruz
+        .eq("id", userId) // Kullanıcının id'siyle eşleştir
+        .single(); // Tek bir kayıt dönecek
+
+      if (error) {
+        console.error("Error fetching user details:", error.message);
+        return;
+      }
+      // Kullanıcı bilgilerini state'e kaydet
+      setUser(data);
+      console.log("User details fetched:", data);
+    } catch (error) {
+      console.error("Unexpected error while fetching user details:", error.message);
+    }
+  };
+  // Resim Ekle
+  const uploadImage = async (userId, image) => {
+    try {
+      // 1. Resmi Supabase Storage'a yükle
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("images") // Bucket adı "images"
+        .upload(`${userId}/${image.name}`, image);
 
       if (uploadError) {
-        throw new Error(`Rapor yükleme hatası: ${uploadError.message}`);
+        console.error("Resim yükleme hatası:", uploadError.message);
+        alert("Resim yüklenirken bir hata oluştu.");
+        return;
       }
 
-      console.log("Excel dosyası başarıyla yüklendi:", uploadData);
+      // 2. Public URL oluştur
+      const { data: publicUrlData, error: publicUrlError } = supabase.storage
+        .from("images")
+        .getPublicUrl(uploadData.path);
 
-      // Yüklenen dosya için public URL al
-      const { data: publicUrlData, error: publicUrlError } = await supabase
-        .storage
-        .from(RAPOR)
-        .getPublicUrl(`raporlar/${filename}`);
-
-      if (publicUrlError) {
-        throw new Error(`Public URL alma hatası: ${publicUrlError.message}`);
+      if (publicUrlError || !publicUrlData.publicUrl) {
+        console.error("Public URL oluşturulamadı:", publicUrlError?.message);
+        alert("Public URL oluşturulamadı.");
+        return;
       }
 
       const publicUrl = publicUrlData.publicUrl;
-      console.log("Public URL alındı:", publicUrl);
 
-      // Public URL'i veritabanına kaydet
-      const { data: insertData, error: insertError } = await supabase
-        .from(RAPOR)
-        .insert([
+      // 3. Mevcut resim URL'lerini veritabanından al
+      const { data: existingImages, error: fetchError } = await supabase
+        .from("images")
+        .select("image_url")
+        .eq("id", userId)
+        .single();
+
+      if (fetchError && fetchError.code !== "PGRST116") {
+        // Kod: "PGRST116", satırın bulunamadığını gösterir
+        console.error("Mevcut resimler alınırken hata oluştu:", fetchError.message);
+        return;
+      }
+
+      // 4. Yeni resim URL'sini mevcut URL'lere ekle
+      const updatedUrls = existingImages?.image_url
+        ? [...existingImages.image_url, publicUrl]
+        : [publicUrl]; // Yeni bir JSON array oluştur
+
+      // 5. Veritabanına kaydet veya güncelle
+      const { error: dbError } = await supabase
+        .from("images")
+        .upsert([
           {
-            name: filename,
-            dosya_url: publicUrl,
+            id: userId, // Kullanıcı ID'si
+            image_url: updatedUrls, // Güncellenmiş URL'ler
           },
         ]);
 
-      if (insertError) {
-        throw new Error(`Veritabanına kayıt hatası: ${insertError.message}`);
+      if (dbError) {
+        console.error("Veritabanına kaydetme hatası:", dbError.message);
+        alert("Veritabanına kaydedilirken bir hata oluştu.");
+        return;
       }
 
-      console.log("Public URL ve dosya adı veritabanına kaydedildi:", insertData);
-
-      // Gerekirse güncellemeleri veya diğer işlemleri tetikleyin
-      await fetchExcelDatabase();
+      alert("Resim başarıyla yüklendi ve kaydedildi.");
     } catch (error) {
-      console.error(error.message);
-      alert(`Hata: ${error.message}`);
-    } finally {
-      setLoading(false);
+      console.error("Beklenmedik hata oluştu:", error.message);
+      alert("Resim yüklenirken bir hata oluştu.");
     }
   };
 
-  const handleDrop = async (filePath, file, fileName) => {
-    setLoading(true);
+  // Resimleri al
+  const fetchImages = async (userId) => {
     try {
-      const sanitizedFilePath = filePath.replace(/[^a-zA-Z0-9/_-]/g, '_');
-      const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9/_-]/g, '_');
+      const { data, error } = await supabase
+        .from("images")
+        .select("image_url")
+        .eq("id", userId)
+        .single(); // Tek bir kullanıcı kaydını al
 
-      const { data: handleData, error: handleError } = await supabase
-        .storage
-        .from(RAPOR)
-        .upload(sanitizedFilePath, file);
-
-      if (handleError) {
-        console.error('Upload error from Supabase:', handleError.message);
-      } else {
-        console.log('Upload successful:', handleData);
+      if (error) {
+        console.error("Resimler alınırken hata oluştu:", error.message);
+        return [];
       }
 
-      const { data: publicUrlData, error: publicUrlError } = await supabase
-        .storage
-        .from(RAPOR)
-        .getPublicUrl(filePath);
-
-      if (publicUrlError) {
-        throw new Error(`Public URL alma hatası: ${publicUrlError.message}`);
-      }
-
-      const publicUrl = publicUrlData.publicUrl;
-      console.log("Public URL alındı:", publicUrl);
-
-      const { data: insertData, error: insertError } = await supabase
-        .from(RAPOR)
-        .insert([
-          {
-            name: sanitizedFileName,
-            dosya_url: publicUrl,
-          }
-        ])
-
-      if (insertError) {
-        throw new Error(`Veritabanına kayıt hatası: ${insertError.message}`);
-      }
-
-      console.log("Public URL ve dosya adı veritabanına kaydedildi:", insertData);
-
+      return data?.image_url || []; // URLs array'ini döndür
     } catch (error) {
-      console.error('Unexpected error during upload:', error.message);
-    } finally {
-      setLoading(false);
+      console.error("Beklenmedik hata oluştu:", error.message);
+      return [];
     }
   };
 
-  const downloadFile = async (filePath) => {
+  // product tablosundaki tüm verileri al
+  const fetchProduct = async () => {
     try {
-      const { data: downloadFileData, error: downloadFileError } = await supabase
-        .storage
-        .from(RAPOR)
-        .download(filePath);
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("category", "İçecekler");
 
-      if (downloadFileError) {
-        console.error('Upload error from Supabase:', downloadFileError.message);
-      } else {
-        console.log('Upload successful:', downloadFileData);
+      if (error) {
+        console.error("Error fetching products details:", error.message);
+        return [];
       }
+      return data;
+    }
+    catch (error) {
+      console.error("Unexpected error while fetching products details:", error.message);
+    }
+  }
 
-      const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filePath.split('/').pop()); // Dosya adı
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+  // Add new function to update break status
+  const updateBreakStatus = async (userId, isOnBreak) => {
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ mola: isOnBreak })
+        .eq('id', userId);
+
+      if (error) throw error;
+      return true;
     } catch (error) {
-      console.error(error.message);
-      alert(`Hata: ${error.message}`);
+      console.error("Mola durumu güncellenemedi:", error.message);
+      return false;
     }
   };
 
-  const saveData = async (selectedDate,tableData,currentData) => {
-    const key = `${selectedDate.month}-${selectedDate.day}`;
+  const fetchBranchUsers = async (branchId) => {
+    try {
+      const { data, error } = await supabase
+        .from("users") // users tablosu
+        .select("id, name, mola, vardiya, temizlik") // Sadece id ve name sütunlarını al
+        .eq("branch_id", branchId); // branch_id eşleşen kullanıcılar
+  
+      if (error) {
+        console.error("Error fetching branch users:", error.message);
+        return [];
+      }
+      return data;
+    } catch (error) {
+      console.error("Unexpected error while fetching branch users:", error.message);
+      return [];
+    }
+  };
 
-    // Supabase'e verileri kaydet
-    const { data, error } = await supabase.from("raporlar").upsert({
-        date_key: key,
-        table_data: currentData,
+  const updateUserShiftAndCleaning = async (userId, vardiya, temizlik) => {
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ 
+          vardiya: vardiya,
+          temizlik: temizlik 
+        })
+        .eq('id', userId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error("Vardiya ve temizlik güncellenemedi:", error.message);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
     });
 
-    if (error) {
-        console.error("Veri kaydedilemedi:", error.message);
-    } else {
-        console.log("Veri başarıyla kaydedildi:", data);
-        
-    }
-};
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
 
-  const value = {
-    data,
-    inventoryData,
-    excelDataPublic,
-    loading,
-    publicUrlExcel,
-    fetchFullInventory,
-    deleteInventory,
-    fetchProduct,
-    updateInventory,
-    addInventory,
-    fetchExcelDatabase,
-    saveAndStoreExcelReport,
-    handleDrop,
-    downloadFile,
-    addProductToInventory,
-    saveData,
-  };
+  // Sign out
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error signing out:", error);
+    }
+  }
 
   return (
-    <SupabaseContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        signInUser,
+        session,
+        user,
+        signOut,
+        fetchUserDetails,
+        fetchProduct,
+        uploadImage,
+        fetchImages,
+        updateBreakStatus,
+        fetchBranchUsers,
+        updateUserShiftAndCleaning,
+      }}
+    >
       {children}
-    </SupabaseContext.Provider>
+    </AuthContext.Provider>
   );
+};
+
+export const UserAuth = () => {
+  return useContext(AuthContext);
 };

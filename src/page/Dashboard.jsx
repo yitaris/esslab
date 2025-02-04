@@ -16,7 +16,7 @@ export default function Dashboard() {
   // Admin ise AdminPage, aksi halde UserPage göster
   return (
     <div className="">
-      {user.title === "müdür" ? (
+      {user.title === "Müdür" ? (
         <AdminPage />
       ) : (
         <UserPage />

@@ -38,10 +38,10 @@ export const AuthContextProvider = ({ children }) => {
   const fetchUserDetails = async (userId) => {
     try {
       const { data, error } = await supabase
-        .from("users") // `users` tablosu
-        .select("branch_id, name, title, branch_name") // İlgili sütunları seçiyoruz
-        .eq("id", userId) // Kullanıcının id'siyle eşleştir
-        .single(); // Tek bir kayıt dönecek
+        .from("users")
+        .select("branch_id, name, title, branch_name, avatar_url, tasks") // tasks eklendi
+        .eq("id", userId)
+        .single();
 
       if (error) {
         console.error("Error fetching user details:", error.message);
@@ -162,6 +162,23 @@ export const AuthContextProvider = ({ children }) => {
     }
   }
 
+  const getSKT = async (branch_id) => {
+    try {
+      const { data, error } = await supabase
+        .from('SKT')
+        .select('*')
+        .eq('branch', branch_id);
+
+      if (error) {
+        console.error("Error fetching SKT details:", error.message);
+        return [];
+      }
+      return data;
+    } catch (error) {
+      console.error("Unexpected error while fetching SKT details:", error.message);
+      return [];
+    }
+  }
   // Add new function to update break status
   const updateBreakStatus = async (userId, isOnBreak) => {
     try {
@@ -182,7 +199,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data, error } = await supabase
         .from("users") // users tablosu
-        .select("id, name, mola, vardiya, temizlik") // Sadece id ve name sütunlarını al
+        .select("id, name, mola, vardiya, temizlik, avatar_url, title, tasks") // Sadece id ve name sütunlarını al
         .eq("branch_id", branchId); // branch_id eşleşen kullanıcılar
   
       if (error) {
@@ -210,6 +227,22 @@ export const AuthContextProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error("Vardiya ve temizlik güncellenemedi:", error.message);
+      return false;
+    }
+  };
+
+  // Add new functions for tasks
+  const updateUserTasks = async (userId, tasks) => {
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ tasks: tasks })
+        .eq('id', userId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error("Görevler güncellenemedi:", error.message);
       return false;
     }
   };
@@ -246,6 +279,8 @@ export const AuthContextProvider = ({ children }) => {
         updateBreakStatus,
         fetchBranchUsers,
         updateUserShiftAndCleaning,
+        updateUserTasks,
+        getSKT,
       }}
     >
       {children}

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { UserAuth } from '../context/SupabaseContext';
 import { useNavigate } from 'react-router-dom';
 /* Images */
-import { ubgida } from '../assets';
 /* Icons */
-import { AiOutlinePoweroff, AiOutlineReload, AiOutlineDelete, AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineReload, AiOutlineDelete, AiOutlineCloudUpload } from "react-icons/ai";
+import { IoChevronBackOutline } from "react-icons/io5";
 
 export default function Profile() {
     const { session, user, signOut, uploadImage, fetchImages } = UserAuth();
@@ -12,12 +12,11 @@ export default function Profile() {
     const [userImages, setUserImages] = useState([]);
     const [deleteMode, setDeleteMode] = useState(false);
 
-    // Çıkış yap ve login sayfasına yönlendir
-    const handleSignOut = async (e) => {
+    // Bir Önceki Sayfaya Yönlendir
+    const handleBack = async (e) => {
         e.preventDefault();
         try {
-            await signOut();
-            navigate("/"); // Login sayfasına yönlendir
+            navigate(-1);
         } catch (err) {
             alert("Beklenmedik Bir Hata Oluştu!"); // Alert ile hatayı bildir
         }
@@ -74,10 +73,10 @@ export default function Profile() {
         <div className="w-full h-full bg-[#09090b] text-white flex flex-col">
             {/* Header */}
             <div className="w-full h-[80px] px-5 flex items-center justify-between border-b border-[#ffffff2c]">
-                <img src={ubgida} alt="Logo" className="w-20 h-20" />
+                <img src={""} alt="Logo" className="w-20 h-20" />
                 <div>
-                    <AiOutlinePoweroff
-                        onClick={handleSignOut} // Çıkış yap
+                    <IoChevronBackOutline
+                        onClick={handleBack} // Çıkış yap
                         cursor="pointer"
                         size={35}
                         className="text-[#444343] hover:text-white transition-all duration-300"

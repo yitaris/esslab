@@ -3,7 +3,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, EffectCoverflow } from 'swiper/modules';
 import { branches } from '../constants';
 import { useNavigate } from 'react-router-dom';
-import { ubgida } from '../assets';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -41,7 +40,7 @@ const Branches = () => {
             {/* Logo */}
             <div>
             <img 
-                src={ubgida}
+                src={""}
                 alt="UB Gıda Logo"
                 className="w-[200px] h-auto mb-6"
             />

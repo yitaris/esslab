@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ubgida, ubvideo } from "../assets";
+import { ubvideo,ubgidadark,ubgidalight } from "../assets";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/SupabaseContext";
@@ -51,7 +51,7 @@ const Login = ({}) => {
                     transition={{ duration: 1 }}
                     className="flex flex-col items-center text-white"
                 >
-                    <img src={ubgida} className="w-[150px] h-[150px]" />
+                    <img src={ubgidalight} className="w-[150px] h-[150px]" />
                     <form  onSubmit={handleSignIn} className="w-full h-full max-w-sm flex flex-col items-center justify-evenly">
                         <motion.div
                             initial={{ opacity: 0, translateY: -50 }}
@@ -59,7 +59,7 @@ const Login = ({}) => {
                             transition={{ duration: 1 }}
                             className="flex flex-col items-center">
                             <h1 className="text-3xl font-semibold mt-10">
-                                ESPRESSO<span className="text-red">LAB</span>
+                                ESPRESSO<span className="text-red-500">LAB</span>
                             </h1>
                             <p className="mt-2 font-semibold text-[#aaa9a9d3]"></p>
                         </motion.div>

@@ -1,25 +1,41 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+module.exports = {
+  content: ["./src/**/*.{js,jsx}"],
   darkMode: 'class', // Dark mode class tabanlı
   mode: "jit",
   theme: {
     extend: {
       colors: {
-        mainBackground: {
-          DEFAULT: '#fff',
-          dark: '#121212',
+        toggleButton: {
+          DEFAULT: '#ecca2f', // Light mode
+          dark: '#292929',   // Dark mode
         },
-        red:{
-          DEFAULT: '#b32017',
-          dark: '#b32017',
-        }
-      }
+        mainBackground: {
+          DEFAULT: '#6886c5',
+          dark: '#271818',
+        },
+        contentBackground: {
+          DEFAULT: '#fff',
+          dark: '#141414',
+        },
+        textColor: {
+          DEFAULT: '#fff',
+          dark: '#dddad5',
+        },
+        gridBackground: {
+          DEFAULT: '',
+          dark: '#181a1b',
+        },
+        primary: {
+          DEFAULT: "#6886c5",
+          dark: "#4b5563", 
+        },
+        secondary: {
+          DEFAULT: "#6b7280",
+          dark: "#9ca3af",
+        },
+      },
     },
   },
-  plugins: [
-  ],
+  plugins: [],
 };

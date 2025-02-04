@@ -3,7 +3,8 @@ import esslabicon from "./logo/esslabicon.svg";
 import react from "./logo/react.svg";
 import esslablogodark from "./logo/logodark.png";
 import logout from "./icon/logout.svg";
-import ubgida from "./logo/ubgida.png";
+import ubgidadark from "./logo/ubgidadark.png"
+import ubgidalight from "./logo/ubgidalight.png"
 import ubgida2 from "./logo/ubgida2.png";
 import ubkahve from "./logo/ubkahve.png";
 import esslabmekan from "./background/esslabmekan.jpg"
@@ -21,7 +22,7 @@ import stradaavm from "./branches/stradaavm.jpg";
 
 export {
     //logo//
-    esslablogo,esslabicon,react,esslablogodark,ubgida,ubkahve,ubgida2,ubgidagreen,
+    esslablogo,esslabicon,react,esslablogodark,ubkahve,ubgida2,ubgidagreen,ubgidadark,ubgidalight,
     //icon//
     logout,
     //mekan//

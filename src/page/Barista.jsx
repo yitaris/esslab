@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "../lib/supabaseClient";
-import { ubgida } from "../assets";
 import { UserAuth } from "../context/SupabaseContext";
 
 //page//
@@ -36,7 +35,7 @@ const Barista = () => {
         {/* HEADER */}
         <div className="w-full relative px-5">
             <img
-                src={ubgida}
+                src={""}
                 className="w-20 h-20"
             />
             

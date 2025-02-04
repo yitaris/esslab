@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { motion } from "framer-motion";
-import { ubgida } from "../assets";
 
 export default function Fetchpanel() {
   const { inventoryData, fetchFullInventory, deleteInventory } = useSupabase();
@@ -114,7 +113,7 @@ export default function Fetchpanel() {
     return (
       <div className="absolute inset-0 grid place-content-center">
         <img
-          src={ubgida}
+          src={""}
           alt="Loading..."
           className="w-30 h-30 animate-pulse"
         />

@@ -1,196 +1,189 @@
 import React, { useState, useEffect } from 'react';
 import { UserAuth } from '../context/SupabaseContext';
 import { useNavigate } from 'react-router-dom';
-/* Images */
-import { ubgida } from '../assets';
-/* Icons */
-import { AiOutlineUser } from "react-icons/ai";
-import { FiUsers, FiCoffee, FiBox, FiBook, FiCheckSquare } from "react-icons/fi";
+import { FiUsers, FiBox, FiBook, FiCheckSquare, FiCoffee, FiSearch, FiMoon, FiSun, FiBell, FiDownload, FiArrowRight } from "react-icons/fi";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { AiOutlineUser, AiOutlinePoweroff } from "react-icons/ai";
+import AdminPanel from './pages/AdminPanel';
+import AdminAttendance from './pages/AdminAttendance';
 
-// Vardiya seçenekleri için array ekleyelim
-const vardiyaOptions = ['08:00-17:00', '16:00-01:00', '12:00-21:00'];
-const temizlikOptions = ['Bar', 'Dış Alan', 'Üst Alan'];
-
-// Yanıp sönme animasyonu için CSS keyframes ekleyin (style tag'i içinde)
-const pulseAnimation = `
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-  }
-`;
+const menuItems = [
+  { id: 'dashboard', title: 'Dashboard', icon: <FiBook /> },
+  { id: 'attendance', title: 'Attendance', icon: <FiUsers /> },
+  { id: 'payroll', title: 'Payroll', icon: <FiCheckSquare /> },
+  { id: 'reports', title: 'Reports', icon: <FiCoffee /> },
+];
 
 export default function AdminPage() {
-    const { session, user, fetchBranchUsers, updateUserShiftAndCleaning } = UserAuth(); // Kullanıcı bilgileri ve fonksiyonlar
-    const navigate = useNavigate();
-    const [users, setUsers] = useState([]);
-    const [activeTab, setActiveTab] = useState('users');
+  const { user, signOut } = UserAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  
+  const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
-    const handleVardiyaChange = (userId, value) => {
-        setUsers(users.map(user => 
-            user.id === userId ? {...user, vardiya: value} : user
-        ));
-    };
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Çıkış yapılırken hata:', error);
+    }
+  };
 
-    const handleTemizlikChange = (userId, value) => {
-        setUsers(users.map(user => 
-            user.id === userId ? {...user, temizlik: value} : user
-        ));
-    };
-
-    const handleSaveChanges = async (userId) => {
-        const userToUpdate = users.find(user => user.id === userId);
-        try {
-            const success = await updateUserShiftAndCleaning(
-                userId, 
-                userToUpdate.vardiya, 
-                userToUpdate.temizlik
-            );
-            
-            if (success) {
-                alert('Değişiklikler başarıyla kaydedildi');
-                // Güncel kullanıcı listesini yeniden yükle
-                const updatedUsers = await fetchBranchUsers(user.branch_id);
-                setUsers(updatedUsers);
-            } else {
-                alert('Değişiklikler kaydedilirken bir hata oluştu');
-            }
-        } catch (error) {
-            console.error('Hata:', error);
-            alert('Bir hata oluştu');
-        }
-    };
-
-    useEffect(() => {
-        // branch_id'ye göre kullanıcıları çek
-        const loadUsers = async () => {
-            if (user?.branch_id) {
-                const branchUsers = await fetchBranchUsers(user.branch_id);
-                setUsers(branchUsers);
-            }
-        };
-        loadUsers();
-    }, [user]);
-
-    return (
-        <div className="w-full h-screen bg-[#09090b] text-white flex flex-col">
-            <style>{pulseAnimation}</style>
-            {/* Header */}
-            <div className="w-full h-[80px] px-5 flex items-center justify-between border-b border-[#ffffff2c]">
-                <img src={ubgida} alt="Logo" className="w-20 h-20" />
-                <div className="flex items-center gap-4">
-                    <AiOutlineUser
-                        onClick={() => navigate("/profile")}
-                        cursor="pointer"
-                        size={35}
-                        className="text-[#444343] hover:text-white transition-all duration-300"
-                    />
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className='p-5 w-full h-full grid grid-cols-12 gap-5'>
-                {/* Sidebar */}
-                <div className='col-span-12 md:col-span-2 bg-[#18181b] rounded-lg p-5 flex flex-col gap-4'>
-                    <nav className="flex flex-col gap-2">
-                        <button
-                            onClick={() => setActiveTab('users')}
-                            className={`flex items-center gap-2 p-2 rounded ${activeTab === 'users' ? 'bg-[#27272a]' : ''}`}
-                        >
-                            <FiUsers /> Çalışanlar
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('orders')}
-                            className={`flex items-center gap-2 p-2 rounded ${activeTab === 'orders' ? 'bg-[#27272a]' : ''}`}
-                        >
-                            <FiCoffee /> Siparişler
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('inventory')}
-                            className={`flex items-center gap-2 p-2 rounded ${activeTab === 'inventory' ? 'bg-[#27272a]' : ''}`}
-                        >
-                            <FiBox /> Stok Durumu
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('recipes')}
-                            className={`flex items-center gap-2 p-2 rounded ${activeTab === 'recipes' ? 'bg-[#27272a]' : ''}`}
-                        >
-                            <FiBook /> Tarifler
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('cleaning')}
-                            className={`flex items-center gap-2 p-2 rounded ${activeTab === 'cleaning' ? 'bg-[#27272a]' : ''}`}
-                        >
-                            <FiCheckSquare /> Temizlik Kontrol
-                        </button>
-                    </nav>
-                </div>
-
-                {/* Main Content Area */}
-                <div className='col-span-12 md:col-span-10 bg-[#18181b] rounded-lg p-5'>
-                    {activeTab === 'users' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {users.map((user) => (
-                                <div key={user.id} className="bg-[#27272a] p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 relative">
-                                    {/* Mola durumu için yanıp sönen indicator */}
-                                    {user.mola && (
-                                        <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-[pulse_1.5s_ease-in-out_infinite]" />
-                                    )}
-                                    
-                                    {/* Kullanıcı başlık kısmı */}
-                                    <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[#ffffff1a]">
-                                        <div className="w-12 h-12 bg-[#3f3f46] rounded-full flex items-center justify-center">
-                                            <AiOutlineUser size={24} />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-lg">{user.name}</h3>
-                                            <span className={`text-sm ${user.mola ? 'text-red-400' : 'text-green-400'}`}>
-                                                {user.mola ? 'Molada' : 'Çalışıyor'}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Vardiya seçimi */}
-                                    <div className="mb-4">
-                                        <label className="text-sm text-gray-400 block mb-2">Vardiya</label>
-                                        <select
-                                            value={user.vardiya}
-                                            onChange={(e) => handleVardiyaChange(user.id, e.target.value)}
-                                            className="w-full bg-[#3f3f46] rounded-md p-2 outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            {vardiyaOptions.map((option) => (
-                                                <option key={option} value={option}>{option}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    {/* Temizlik durumu seçimi */}
-                                    <div className="mb-4">
-                                        <label className="text-sm text-gray-400 block mb-2">Temizlik</label>
-                                        <select
-                                            value={user.temizlik}
-                                            onChange={(e) => handleTemizlikChange(user.id, e.target.value)}
-                                            className="w-full bg-[#3f3f46] rounded-md p-2 outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            {temizlikOptions.map((option) => (
-                                                <option key={option} value={option}>{option}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    {/* Kaydet butonu */}
-                                    <button
-                                        onClick={() => handleSaveChanges(user.id)}
-                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300"
-                                    >
-                                        Değişiklikleri Kaydet
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
+  return (
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+      {/* Sidebar */}
+      <div className="w-20 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col items-center py-6 transition-colors duration-200">
+        {/* Logo */}
+        <div className="mb-8">
+          <div className="w-12 h-12 bg-purple-600 dark:bg-purple-500 rounded-xl flex items-center justify-center">
+            <FiBook className="w-6 h-6" />
+          </div>
         </div>
-    );
+
+        {/* Navigation */}
+        <nav className="flex flex-col gap-4">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`p-3 rounded-xl transition-all ${
+                activeTab === item.id
+                  ? 'bg-purple-600 dark:bg-purple-500 text-white'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              {React.cloneElement(item.icon, { className: "w-6 h-6" })}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-hidden">
+        {/* Header */}
+        <header className="h-16 px-6 flex items-center justify-end border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-colors duration-200">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="bg-gray-100 dark:bg-gray-700 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 transition-colors duration-200"
+              />
+            </div>
+            
+            <button 
+              onClick={() => setDarkMode(!darkMode)}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {darkMode ? (
+                <FiSun className="w-5 h-5 text-yellow-500" />
+              ) : (
+                <FiMoon className="w-5 h-5 text-gray-600" />
+              )}
+            </button>
+
+            {/* Notifications Button and Dropdown */}
+            <div className="relative dropdown-container">
+              <button 
+                className="p-2 hover:bg-[#2C2C2E] rounded-lg relative"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowNotifications(!showNotifications);
+                  setShowProfileMenu(false);
+                }}
+              >
+                <FiBell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-purple-600 rounded-full"></span>
+              </button>
+              
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 bg-[#2C2C2E] rounded-xl shadow-lg py-2 z-50">
+                  <div className="px-4 py-2 border-b border-[#3C3C3E]">
+                    <h3 className="font-semibold">Notifications</h3>
+                  </div>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    {/* Sample notifications */}
+                    <div className="px-4 py-3 hover:bg-[#3C3C3E] cursor-pointer">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                          <FiDownload className="text-purple-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm">New report available</p>
+                          <p className="text-xs text-gray-400">2 hours ago</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Profile Button and Dropdown */}
+            <div className="relative dropdown-container">
+              <button 
+                className="ml-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowProfileMenu(!showProfileMenu);
+                  setShowNotifications(false);
+                }}
+              >
+                <img
+                  src={user?.avatar_url || "default-avatar.png"}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-lg object-cover"
+                />
+              </button>
+
+              {showProfileMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-[#2C2C2E] rounded-xl shadow-lg py-2 z-50">
+                  <div className="px-4 py-2 border-b border-[#3C3C3E]">
+                    <p className="font-semibold">{user?.email}</p>
+                    <p className="text-sm text-gray-400">Admin</p>
+                  </div>
+                  <div className="py-1">
+                    <button className="w-full px-4 py-2 text-left hover:bg-[#3C3C3E] flex items-center gap-2">
+                      <AiOutlineUser className="w-5 h-5" />
+                      Profile Settings
+                    </button>
+                    <button 
+                      onClick={handleSignOut}
+                      className="w-full px-4 py-2 text-left hover:bg-[#3C3C3E] text-red-400 flex items-center gap-2"
+                    >
+                      <AiOutlinePoweroff className="w-5 h-5" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="p-6 overflow-y-auto h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+          {activeTab === 'dashboard' && (
+            <AdminPanel />
+          )}
+          {activeTab === 'attendance' && (
+            <AdminAttendance />
+          )}
+          {/* Other tab contents */}
+        </main>
+      </div>
+    </div>
+  );
 }

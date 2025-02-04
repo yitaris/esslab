@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "../lib/supabaseClient";
-import { ubgida } from "../assets";
 import { LuPanelsLeftBottom } from "react-icons/lu";
 import { RiFileExcel2Line } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
@@ -67,7 +66,7 @@ const Inventory = () => {
         animate="visible"
         variants={logoVariants}
       >
-        <img src={ubgida} className="w-20" alt="Logo" />
+        <img src={""} className="w-20" alt="Logo" />
         <button onClick={() => setMenuOpen(!menuOpen)}>
           <FaBars size={30} className="text-white" />
         </button>
@@ -104,7 +103,7 @@ const Inventory = () => {
           animate="visible"
           variants={sidebarVariants}
         >
-          <img src={ubgida} className="w-20 absolute top-5 left-4 hidden lg:block" />
+          <img src={""} className="w-20 absolute top-5 left-4 hidden lg:block" />
           <div className="w-full bg-[#18181b] rounded-tr-2xl rounded-br-2xl relative group transition-all duration-300">
             <div className="flex flex-col items-center py-5 space-y-4">
               {categories.map((item, index) => (

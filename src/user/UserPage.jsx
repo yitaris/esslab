@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { UserAuth } from '../context/SupabaseContext';
 import { useNavigate } from 'react-router-dom';
 /* Images */
-import { ubgida } from '../assets';
 /* Icons */
 import { AiOutlineUser, AiOutlineReload, AiOutlineSearch, AiOutlineClockCircle } from "react-icons/ai";
 import { FiPlus, FiCoffee, FiClipboard, FiBox, FiBook, FiCheckSquare } from "react-icons/fi";
@@ -105,7 +104,7 @@ export default function UserPage() {
         <div className="w-full h-screen bg-[#09090b] text-white flex flex-col">
             {/* Header */}
             <div className="w-full h-[80px] px-5 flex items-center justify-between border-b border-[#ffffff2c]">
-                <img src={ubgida} alt="Logo" className="w-20 h-20" />
+                <img src={""} alt="Logo" className="w-20 h-20" />
                 <div className="flex items-center gap-4">
                     <span className="text-sm text-gray-400">
                         {shift.startTime ? `Vardiya Başlangıcı: ${new Date(shift.startTime).toLocaleTimeString()}` : 'Vardiya Başlamadı'}

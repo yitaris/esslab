@@ -19,7 +19,7 @@ import {
   SidebarRail,
 } from "../components/ui/sidebar"
 
-import { ubgidadark } from "../assets";
+import { ubgidadark } from "../../assets";
 // This is sample data.
 const data = {
   navMain: [

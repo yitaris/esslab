@@ -1,5 +1,5 @@
 "use client"
-import { UserAuth } from "../../context/SupabaseContext"
+import { UserAuth } from "../context/SupabaseContext.jsx"
 import {
   BadgeCheck,
   Bell,

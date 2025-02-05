@@ -20,8 +20,6 @@ import { Button } from "../components/ui/button";
 import AdminPanel from "./pages/AdminPanel";
 import BarSkt from "../page/skt/barskt";
 
-import { ubgidadark } from "../assets";
-
 export default function Page() {
   const [activePage, setActivePage] = useState(window.location.hash || "#panel");
   const [darkMode, setDarkMode] = useState(

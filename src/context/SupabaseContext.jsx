@@ -179,6 +179,16 @@ export const AuthContextProvider = ({ children }) => {
       return [];
     }
   }
+  const deleteSKT = async (id) => {
+    try {
+      const { error } = await supabase.from('SKT').delete().eq('id', id);
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error("SKT silinemedi:", error.message);
+      return false;
+    }
+  }
   // Add new function to update break status
   const updateBreakStatus = async (userId, isOnBreak) => {
     try {
@@ -281,6 +291,7 @@ export const AuthContextProvider = ({ children }) => {
         updateUserShiftAndCleaning,
         updateUserTasks,
         getSKT,
+        deleteSKT
       }}
     >
       {children}

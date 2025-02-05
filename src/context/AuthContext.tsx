@@ -1,15 +1,44 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "../lib/supabaseClient.ts"
 
-const AuthContext = createContext();
+// Define types for user data and session
+interface User {
+  id: string;
+  name: string;
+  title: string;
+  branch_name: string;
+  avatar_url: string;
+  branch_id: string;
+  email: string;
+}
 
-export const AuthContextProvider = ({ children }) => {
-  const [session, setSession] = useState(null);
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null // localStorage kontrolü
+interface Session {
+  user: User | null;
+  access_token: string | null;
+}
+
+interface AuthContextType {
+  signInUser: (email: string, password: string) => Promise<{ success: boolean; data?: any; error?: string }>;
+  session: Session | null;
+  user: User | null;
+  signOut: () => Promise<void>;
+  getSKT: (branch_id: string) => Promise<any[]>; // Replace `any[]` with the appropriate type
+  deleteSKT: (id: string) => Promise<boolean>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface AuthContextProviderProps {
+  children: ReactNode;
+}
+
+export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(
+    JSON.parse(localStorage.getItem("user") || "null")
   );
 
-  const signInUser = async (email, password) => {
+  const signInUser = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.toLowerCase(),
@@ -33,14 +62,14 @@ export const AuthContextProvider = ({ children }) => {
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
-    localStorage.removeItem("user"); // Çıkış yapınca localStorage'ı temizle
+    localStorage.removeItem("user"); // Clear localStorage on sign out
   };
 
-  const fetchUserDetails = async (userId) => {
+  const fetchUserDetails = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from("users")
-        .select("branch_id, name, title, branch_name, avatar_url, tasks")
+        .select("branch_id, name, title, branch_name, avatar_url, tasks, email")
         .eq("id", userId)
         .single();
 
@@ -50,13 +79,13 @@ export const AuthContextProvider = ({ children }) => {
       }
 
       setUser(data);
-      localStorage.setItem("user", JSON.stringify(data)); // Kullanıcıyı kaydet
+      localStorage.setItem("user", JSON.stringify(data)); // Store user data in localStorage
     } catch (error) {
       console.error("Unexpected error while fetching user details:", error);
     }
   };
 
-  const getSKT = async (branch_id) => {
+  const getSKT = async (branch_id: string) => {
     try {
       const { data, error } = await supabase
         .from("SKT")
@@ -69,18 +98,18 @@ export const AuthContextProvider = ({ children }) => {
       }
       return data;
     } catch (error) {
-      console.error("Unexpected error while fetching SKT details:",error);
+      console.error("Unexpected error while fetching SKT details:", error);
       return [];
     }
   };
-  
-   const deleteSKT = async (id) => {
+
+  const deleteSKT = async (id: string) => {
     try {
       const { error } = await supabase.from("SKT").delete().eq("id", id);
       if (error) throw error;
       return true;
     } catch (error) {
-      console.error("SKT silinemedi:", error);
+      console.error("Error deleting SKT:", error);
       return false;
     }
   };
@@ -118,7 +147,7 @@ export const AuthContextProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthContextProvider");

@@ -1,19 +1,21 @@
-import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import Login from "./page/Login";
-
-import { UserAuth } from "./context/SupabaseContext";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./context/SupabaseContext";
 
 function App() {
-  const { user } = UserAuth();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user?.title === "Mağaza Müdürü") {
+      navigate("/home");
+    }else if (!user) { 
+      navigate("/signIn");
+    }else {
+      navigate("/verify");
+    }
+  }, [user, navigate]);
 
-  // console.log(user);
-
-  return (
-    <>
-      <Login />
-    </>
-  );
+  return <></>;
 }
 
 export default App;

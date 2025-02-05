@@ -29,15 +29,15 @@ const data = {
       items: [
         {
           title: "Panel",
-          url: "#analizler/panel",
+          url: "/analizler/panel",
         },
         {
           title: "İstatistikler",
-          url: "#analizler/istatistikler",
+          url: "/analizler/istatistikler",
         },
         {
           title: "Envanter",
-          url: "#analizler/envanter",
+          url: "/analizler/envanter",
         },
       ],
     },
@@ -48,11 +48,11 @@ const data = {
       items: [
         {
           title: "Depo SKT",
-          url: "#skttakip/deposkt",
+          url: "/skttakip/deposkt",
         },
         {
           title: "Bar SKT",
-          url: "#skttakip/barskt",
+          url: "/skttakip/barskt",
         },
       ],
     },
@@ -119,7 +119,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  return (
+return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
         <NavMain items={data.navMain} />

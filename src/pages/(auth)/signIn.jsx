@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ubvideo,ubgidadark,ubgidalight } from "../assets";
+import { ubvideo,ubgidadark,ubgidalight } from "../../assets";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { UserAuth } from "../context/SupabaseContext";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/SupabaseContext"; // ✅ Doğru
 
-const Login = ({}) => {
+const SignIn = ({}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [error, setError] = useState(null);
 
-    const { user, signInUser } = UserAuth();
+    const { signInUser } = useAuth();  
     const navigate = useNavigate();
 
     const handleSignIn = async (e) => {
@@ -27,7 +27,7 @@ const Login = ({}) => {
           }, 3000); // 3000 milliseconds = 3 seconds
         } else {
           // Redirect or perform any necessary actions after successful sign-in
-          navigate(`/dashboard`);
+          navigate(`/`);
         }
     
         if (session) {
@@ -150,4 +150,4 @@ const Login = ({}) => {
     );
 };
 
-export default Login;
+export default SignIn;

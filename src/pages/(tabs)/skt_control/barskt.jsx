@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { UserAuth } from "../../context/SupabaseContext";
+import { useAuth } from "../../../context/SupabaseContext";
 import dayjs from "dayjs";
-import { Card, CardContent } from "../../components/ui/card";
+import { Card, CardContent } from "../../../components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../../components/ui/carousel";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
-import { Button } from "../../components/ui/button";
+} from "../../../components/ui/carousel";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
+import { Button } from "../../../components/ui/button";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "../../components/ui/input-otp";
+} from "../../../components/ui/input-otp";
 
 export default function BarSkt() {
-  const { getSKT, deleteSKT, user } = UserAuth();
+  const { getSKT, deleteSKT, user } = useAuth();
   const [skt, setSkt] = useState([]);
   const [loading, setLoading] = useState(true);
   const [otp, setOtp] = useState("");
